@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.pda">
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.domn.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths"/>
+        </provider>
+        <activity
+            android:name="com.example.pda.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity android:name="com.example.pda.ListActivity" android:parentActivityName=".ChoiceHouse" android:label="成品待入库">
+
+        </activity>
+        <activity android:name="com.example.pda.ListTwoActivity" android:parentActivityName=".GroupUserChoiceActivity" android:label="组托">
+
+        </activity>
+
+        <activity android:name="com.example.pda.MenuActivity" android:label="菜单">
+
+        </activity>
+
+        <activity android:name="com.example.pda.LoginActivity" android:windowSoftInputMode="stateHidden|stateUnchanged|adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+        <activity android:name="com.example.pda.ChoiceHouse" android:parentActivityName=".LoginActivity" android:label="选择待入库仓库">
+
+        </activity>
+
+        <activity android:name="com.example.pda.GroupUserChoiceActivity" android:parentActivityName=".LoginActivity" android:label="选择客户">
+
+        </activity>
+    </application>
+
+</manifest>
