@@ -25,6 +25,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
@@ -34,6 +35,7 @@ import com.example.pda.bean.globalbean.MyOkHttpClient;
 import com.example.pda.bean.globalbean.MyToast;
 import com.example.pda.util.ApkUpdateUtils;
 import com.example.pda.util.LongClickUtils;
+import com.example.pda.util.TimeUtils;
 import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
@@ -82,6 +84,8 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     EditText pass;
     @ViewInject(R.id.login)
     Button btn;
+    @ViewInject(R.id.ChoiceDate)
+    TextView ChoiceDate;
     private Toast toast;
     private ZLoadingDialog dialog;
     private int screenHeight = 0;//屏幕高度
@@ -91,6 +95,8 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     private SharedPreferences setinfo;
     private List<String> ipList = Arrays.asList("192.168.11.243", "192.168.11.249");
     private String currentIp;
+    private String cuureDate;
+    private List<String> DateList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +115,9 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
             name.setText(setinfo2.getString("name", ""));
             pass.setText(setinfo2.getString("pass", ""));
         }
+        DateList = TimeUtils.getDateList(5);
+        cuureDate = DateList.get(5);
+        changeChoiceDate();
         getPermission();
         onLongClick();
         checkVersion();
@@ -117,6 +126,10 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     private void checkVersion() {
         ApkUpdateUtils apkUpdateUtils = new ApkUpdateUtils(this);
         apkUpdateUtils.checkVersion();
+    }
+
+    private void changeChoiceDate() {
+        ChoiceDate.setText("登陆日期为：" + cuureDate);
     }
 
     private void getPermission() {
@@ -133,6 +146,28 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         if (preCheck()){
             postRequest(username, password);
         }
+    }
+    @Event(value = R.id.ChoiceDate)
+    private void ChoiceDateClick(View view) {
+
+        OptionsPickerView pvOptions = new OptionsPickerView.Builder(LoginActivity.this, new OptionsPickerView.OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                cuureDate = DateList.get(options1);
+                changeChoiceDate();
+            }
+        }) .setDividerColor(Color.BLACK)
+                .setTextColorCenter(Color.BLACK) //设置选中项文字颜色
+                .setContentTextSize(20)//设置文字大小
+                .setOutSideCancelable(false)// default is true
+                .setTitleText("请选择登陆时间")
+                .setCancelText("取消")
+                .setSubmitText("确定")
+                .build();
+        pvOptions.setPicker(DateList);
+        pvOptions.setSelectOptions(DateList.indexOf(cuureDate));
+        pvOptions.show();
+
     }
     private boolean preCheck() {
         if ("true".equals(setinfo.getString("Version", "false"))) {
@@ -263,6 +298,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                     setinfo.edit()
                             .putString("user", new Gson().toJson(userBean))
                             .putString("Ip", currentIp)
+                            .putString("Date", cuureDate)
                             .commit();
                     SharedPreferences setinfo2 = getPreferences(Activity.MODE_PRIVATE);
                     if (isSave.isChecked()) {
