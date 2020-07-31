@@ -243,7 +243,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         RequestBody formBody = FormBody.create(MediaType.parse("application/json"), new Gson().toJson(new LoginBean(username, password)));
         //发起请求
         final Request request = new Request.Builder()
-                .url("http://" + currentIp + "/FirstPDAServer/home/UserLogin?username=" + username + "&" + "password=" + password)
+                .url("http://" + currentIp + "/MeiliPDAServer/home/UserLogin?username=" + username + "&" + "password=" + password)
                 .get()
                 .build();
         dialog = new ZLoadingDialog(LoginActivity.this);
@@ -292,7 +292,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                 final UserBean userBean = new Gson().fromJson(ReturnMessage, UserBean.class);
                 final int status = Integer.parseInt(userBean.getStatus());
                 final String mes = userBean.getMsg();
-                if (status > 0) {
+                if (status == 0) {
                     Intent i = new Intent(LoginActivity.this, MenuActivity.class);
                     SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
                     setinfo.edit()
