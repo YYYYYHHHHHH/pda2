@@ -44,7 +44,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <activity android:name="com.example.pda.ChoiceHouse" android:parentActivityName=".LoginActivity" android:label="选择待入库仓库">

@@ -75,8 +75,8 @@ public class ChoiceHouse extends AppCompatActivity {
                 @Override
                 public void onOptionsSelect(int options1, int options2, int options3, View v) {
                     WhBean wh = WhList.get(options1);
-                    editText.setText(wh.getWhName());
-                    whId = wh.getWhId();
+                    editText.setText(wh.getcWhName());
+                    whId = wh.getcWhCode();
                 }
             })
 
@@ -114,7 +114,7 @@ public class ChoiceHouse extends AppCompatActivity {
 
     private void getWhList() {
         final Request request = new Request.Builder()
-                .url("http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/GetWhList?loginId=" + userBean.getStatus() + "&menuid=" + 1)
+                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/GetWhList?userName=" + userBean.getUser())
                 .get()
                 .build();
         //新建一个线程，用于得到服务器响应的参数
@@ -157,7 +157,7 @@ public class ChoiceHouse extends AppCompatActivity {
                 final WhListBean whListBean = new Gson().fromJson(ReturnMessage, WhListBean.class);
                 WhList = whListBean.getRows();
                 if (WhList.size() == 1) {
-                    editText.setText(WhList.get(0).getWhName());
+                    editText.setText(WhList.get(0).getcWhName());
                 }
             } else {
 
