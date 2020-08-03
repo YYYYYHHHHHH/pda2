@@ -83,7 +83,7 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void getMenus() {
-        String str = "{PDAMenu: 2,Rows: [{menuId: 110,menuName: 成品待入库, menuTitle:成品待入库},{menuId:410,menuName:条码拆托返工,menuTitle:条码拆托返工}, {menuId:410,menuName:条码不拆托,menuTitle:条码不拆托}]}";
+        String str = "{PDAMenu: 2,Rows: [{menuId: 110,menuName: 成品待入库, menuTitle:成品待入库},{menuId:410,menuName:条码拆托返工,menuTitle:条码拆托返工}, {menuId:410,menuName:条码不拆托,menuTitle:条码不拆托}, {menuId:410,menuName:其他出库,menuTitle:其他出库}]}";
         mHandler.obtainMessage(1, str).sendToTarget();
     }
 
@@ -153,6 +153,9 @@ public class MenuActivity extends AppCompatActivity {
                     } else if (title.contains("条码不拆托")) {
                         Intent intent = new Intent(MenuActivity.this, ListThreeActivity.class);
                         startActivity(intent);
+                    }else if (title.contains("其他出库")) {
+                        Intent intent = new Intent(MenuActivity.this, ListThreeActivity.class);
+                        startActivity(intent);
                     }
                 }
             });
@@ -183,6 +186,9 @@ public class MenuActivity extends AppCompatActivity {
                             image = R.mipmap.ruku;
                         }
                         case "条码不拆托": {
+                            image = R.mipmap.ruku;
+                        }
+                        case "其他出库": {
                             image = R.mipmap.ruku;
                         }
                     }
