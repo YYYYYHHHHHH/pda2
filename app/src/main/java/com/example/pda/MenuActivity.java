@@ -83,46 +83,8 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void getMenus() {
-        final Request request = new Request.Builder()
-                .url("http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/GetMenuList?loginId=" + userBean.getStatus())
-                .get()
-                .build();
-        dialog = new ZLoadingDialog(MenuActivity.this);
-        dialog.setLoadingBuilder(Z_TYPE.DOUBLE_CIRCLE)//设置类型
-                .setLoadingColor(Color.BLACK)//颜色
-                .setHintText("加载菜单中")
-                .show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Response response = null;
-                try {
-                    //回调
-                    response = client.newCall(request).execute();
-                    if (response.isSuccessful()) {
-                        //将服务器响应的参数response.body().string())发送到hanlder中，并更新ui
-                        mHandler.obtainMessage(1, response.body().string()).sendToTarget();
-
-                    } else {
-                        dialog.cancel();
-                        throw new IOException("Unexpected code:" + response);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    if (e instanceof SocketTimeoutException) {
-                        toast.setText("请求超时！");
-                        toast.show();
-                    }
-                    if (e instanceof ConnectException) {
-                        toast.setText("和服务器连接异常！");
-                        toast.show();
-
-                    }
-                }
-            }
-        }).start();
-
-
+        String str = "{PDAMenu: 2,Rows: [{menuId: 110,menuName: 成品待入库, menuTitle:成品待入库},{menuId:410,menuName:条码拆托返工,menuTitle:条码拆托返工}, {menuId:410,menuName:条码不拆托,menuTitle:条码不拆托}]}";
+        mHandler.obtainMessage(1, str).sendToTarget();
     }
 
     class MyAdapter extends BaseAdapter {
@@ -181,12 +143,15 @@ public class MenuActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     String title = textView.getText().toString();
-                    if (title.contains("组托单")) {
-                        Intent intent = new Intent(MenuActivity.this, GroupUserChoiceActivity.class);
+                    if (title.contains("条码拆托返工")) {
+                        Intent intent = new Intent(MenuActivity.this, ListTwoActivity.class);
                         startActivity(intent);
                     } else if (title.contains("成品待入库")) {
                         Intent intent = new Intent(MenuActivity.this, ChoiceHouse.class);
                         intent.putExtra("menuid", rows.get(arg0).getMenuId());
+                        startActivity(intent);
+                    } else if (title.contains("条码不拆托")) {
+                        Intent intent = new Intent(MenuActivity.this, ListThreeActivity.class);
                         startActivity(intent);
                     }
                 }
@@ -210,11 +175,14 @@ public class MenuActivity extends AppCompatActivity {
                     hashMap.put("text", rows.get(i).getMenuTitle());
                     Object image = R.mipmap.mima;
                     switch (rows.get(i).getMenuTitle()) {
-                        case "组托单\r\n": {
-                            image = R.mipmap.dan;
+                        case "条码拆托返工": {
+                            image = R.mipmap.ruku;
                             break;
                         }
-                        case "成品待入库\r\n": {
+                        case "成品待入库": {
+                            image = R.mipmap.ruku;
+                        }
+                        case "条码不拆托": {
                             image = R.mipmap.ruku;
                         }
                     }
@@ -227,7 +195,6 @@ public class MenuActivity extends AppCompatActivity {
             } else {
 
             }
-            dialog.cancel();
         }
     };
 }
