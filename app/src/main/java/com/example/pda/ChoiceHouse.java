@@ -49,7 +49,7 @@ public class ChoiceHouse extends AppCompatActivity {
     private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
     private Toast toast = MyToast.getToast();
     private List<WhBean> WhList = new ArrayList<>();
-    private String whId;
+    private String cWhCode;
     private UserBean userBean;
     private String menuid;
     private SharedPreferences setinfo;
@@ -76,7 +76,7 @@ public class ChoiceHouse extends AppCompatActivity {
                 public void onOptionsSelect(int options1, int options2, int options3, View v) {
                     WhBean wh = WhList.get(options1);
                     editText.setText(wh.getcWhName());
-                    whId = wh.getcWhCode();
+                    cWhCode = wh.getcWhCode();
                 }
             })
 
@@ -106,7 +106,7 @@ public class ChoiceHouse extends AppCompatActivity {
             toast.show();
         } else {
             Intent i = new Intent(ChoiceHouse.this, ListActivity.class);
-            i.putExtra("whId", whId);
+            i.putExtra("cWhCode", cWhCode);
             startActivity(i);
         }
 

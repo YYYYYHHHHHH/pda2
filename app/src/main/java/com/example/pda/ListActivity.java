@@ -80,7 +80,7 @@ public class ListActivity extends AppCompatActivity {
     private ScanManager mScanManager;
     private ZLoadingDialog dialog;
     private UserBean userBean;
-    private String whId;
+    private String cWhCode;
     private Set<SlideLayout> sets = new HashSet();
     private Toast toast;
     private int soundid;
@@ -99,7 +99,7 @@ public class ListActivity extends AppCompatActivity {
         setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
         Intent intent = getIntent();
-        whId = intent.getStringExtra("whId");
+        cWhCode = intent.getStringExtra("cWhCode");
         toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.TOP, 0, 70);
         this.listView();
@@ -286,7 +286,10 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void submitBarCode() {
-        String url = "http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/CommitBarToStock?loginId=" + userBean.getStatus() + "&whId=" + whId;
+        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/CommitBarToStock?loginName="
+                + userBean.getUser()
+                + "&cWhCode=" + cWhCode
+                + "tDate=" + setinfo.getString("Date", "");
         for (MyContent myContent : strArr) {
             url += "&barcodes=" + myContent.getContent();
         }
