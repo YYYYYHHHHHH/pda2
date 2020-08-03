@@ -154,7 +154,7 @@ public class MenuActivity extends AppCompatActivity {
                         Intent intent = new Intent(MenuActivity.this, ListThreeActivity.class);
                         startActivity(intent);
                     }else if (title.contains("其他出库")) {
-                        Intent intent = new Intent(MenuActivity.this, ListThreeActivity.class);
+                        Intent intent = new Intent(MenuActivity.this, ListFourActivity.class);
                         startActivity(intent);
                     }
                 }
@@ -179,17 +179,20 @@ public class MenuActivity extends AppCompatActivity {
                     Object image = R.mipmap.mima;
                     switch (rows.get(i).getMenuTitle()) {
                         case "条码拆托返工": {
-                            image = R.mipmap.ruku;
+                            image = R.mipmap.fangong;
                             break;
                         }
                         case "成品待入库": {
                             image = R.mipmap.ruku;
+                            break;
                         }
                         case "条码不拆托": {
-                            image = R.mipmap.ruku;
+                            image = R.mipmap.buchai;
+                            break;
                         }
                         case "其他出库": {
-                            image = R.mipmap.ruku;
+                            image = R.mipmap.chuku;
+                            break;
                         }
                     }
                     hashMap.put("image", image);
