@@ -30,6 +30,9 @@
         <activity android:name="com.example.pda.ListActivity" android:parentActivityName=".ChoiceHouse" android:label="待入库">
 
         </activity>
+        <activity android:name="com.example.pda.ListFourActivity" android:parentActivityName=".ChoiceHouse" android:label="其他出库">
+
+        </activity>
         <activity android:name="com.example.pda.ListThreeActivity" android:parentActivityName=".ChoiceHouse" android:label="条码不拆托返工">
 
         </activity>

@@ -58,7 +58,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 @ContentView(R.layout.activity_list)
-public class ListThreeActivity extends AppCompatActivity {
+public class ListFourActivity extends AppCompatActivity {
     @ViewInject(R.id.numberText)
     private TextView numberText;
     @ViewInject(R.id.inputCode)
@@ -188,7 +188,7 @@ public class ListThreeActivity extends AppCompatActivity {
             toast.show();
             return;
         }
-        new AlertDialog.Builder(ListThreeActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
+        new AlertDialog.Builder(ListFourActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -222,13 +222,13 @@ public class ListThreeActivity extends AppCompatActivity {
 
     @Event(R.id.clear)
     private void initClaer(View view) {
-        new AlertDialog.Builder(ListThreeActivity.this).setTitle("确认要清空吗")
+        new AlertDialog.Builder(ListFourActivity.this).setTitle("确认要清空吗")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         strArr = new ArrayList<>();
-                        MyAdapter myAdapter = new ListThreeActivity.MyAdapter(ListThreeActivity.this, strArr);
+                        MyAdapter myAdapter = new ListFourActivity.MyAdapter(ListFourActivity.this, strArr);
                         listView.setAdapter(myAdapter);
                         numberText.setText("记数：" + strArr.size() + "件");
                         inputCode.setText("");
@@ -255,7 +255,7 @@ public class ListThreeActivity extends AppCompatActivity {
                 .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/CheckBarStatus?barcode=" + barcodeStr)
                 .get()
                 .build();
-        dialog = new ZLoadingDialog(ListThreeActivity.this);
+        dialog = new ZLoadingDialog(ListFourActivity.this);
         dialog.setLoadingBuilder(Z_TYPE.DOUBLE_CIRCLE)//设置类型
                 .setLoadingColor(Color.BLACK)//颜色
                 .setHintText("检查条码中")
@@ -293,7 +293,7 @@ public class ListThreeActivity extends AppCompatActivity {
     }
 
     private void submitBarCode() {
-        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/ReturnBarfromStockOri?userName="
+        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/othReturnBarfromStock?userName="
                 + userBean.getUserId()
                 + "&tDate=" + setinfo.getString("Date", "");
         for (MyContent myContent : strArr) {
@@ -303,7 +303,7 @@ public class ListThreeActivity extends AppCompatActivity {
                 .url(url)
                 .get()
                 .build();
-        dialog = new ZLoadingDialog(ListThreeActivity.this);
+        dialog = new ZLoadingDialog(ListFourActivity.this);
         dialog.setLoadingBuilder(Z_TYPE.DOUBLE_CIRCLE)//设置类型
                 .setLoadingColor(Color.BLACK)//颜色
                 .setHintText("提交中")
@@ -344,7 +344,7 @@ public class ListThreeActivity extends AppCompatActivity {
 
     private void listView() {
         strArr = new ArrayList<>();
-        MyAdapter myAdapter = new ListThreeActivity.MyAdapter(this, strArr);
+        MyAdapter myAdapter = new ListFourActivity.MyAdapter(this, strArr);
         listView.setAdapter(myAdapter);
     }
 
@@ -367,7 +367,7 @@ public class ListThreeActivity extends AppCompatActivity {
                     toast.show();
                 } else {
                     strArr.add(new MyContent(barcodeStr));
-                    MyAdapter myAdapter = new ListThreeActivity.MyAdapter(ListThreeActivity.this, strArr);
+                    MyAdapter myAdapter = new ListFourActivity.MyAdapter(ListFourActivity.this, strArr);
                     listView.setAdapter(myAdapter);
                     numberText.setText("记数：" + strArr.size() + "件");
                     goToBottom();
@@ -379,7 +379,7 @@ public class ListThreeActivity extends AppCompatActivity {
                 int status = Integer.parseInt(barCodeBean.getStatus());
                 String mesg = barCodeBean.getMsg();
 
-                new AlertDialog.Builder(ListThreeActivity.this).setTitle("待入库单号号为：【" + mesg + "】")
+                new AlertDialog.Builder(ListFourActivity.this).setTitle("待入库单号号为：【" + mesg + "】")
                         .setIcon(android.R.drawable.ic_dialog_info)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
@@ -397,7 +397,7 @@ public class ListThreeActivity extends AppCompatActivity {
 
                 } else {
                     strArr.clear();
-                    MyAdapter myAdapter = new ListThreeActivity.MyAdapter(ListThreeActivity.this, strArr);
+                    MyAdapter myAdapter = new ListFourActivity.MyAdapter(ListFourActivity.this, strArr);
                     listView.setAdapter(myAdapter);
                     numberText.setText("记数：" + strArr.size() + "件");
                 }
@@ -462,7 +462,7 @@ public class ListThreeActivity extends AppCompatActivity {
             });
 
             SlideLayout slideLayout = (SlideLayout) convertView;
-            slideLayout.setOnStateChangeListener(new ListThreeActivity.MyAdapter.MyOnStateChangeListener());
+            slideLayout.setOnStateChangeListener(new ListFourActivity.MyAdapter.MyOnStateChangeListener());
 
 
             return convertView;
