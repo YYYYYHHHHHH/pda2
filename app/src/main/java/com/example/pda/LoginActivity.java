@@ -293,8 +293,9 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                 final int status = Integer.parseInt(userBean.getStatus());
                 final String mes = userBean.getMsg();
                 if (status == 0) {
-                    Intent i = new Intent(LoginActivity.this, MenuActivity.class);
+                    Intent i = new Intent(LoginActivity.this, ChoiceHouse.class);
                     SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
+                    userBean.setUserId(name.getText().toString());
                     setinfo.edit()
                             .putString("user", new Gson().toJson(userBean))
                             .putString("Ip", currentIp)

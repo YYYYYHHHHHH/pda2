@@ -287,7 +287,7 @@ public class ListActivity extends AppCompatActivity {
 
     private void submitBarCode() {
         String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/CommitBarToStock?loginName="
-                + userBean.getUser()
+                + userBean.getUserId()
                 + "&cWhCode=" + cWhCode
                 + "tDate=" + setinfo.getString("Date", "");
         for (MyContent myContent : strArr) {

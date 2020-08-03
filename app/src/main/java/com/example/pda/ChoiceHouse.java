@@ -30,6 +30,7 @@ import org.xutils.x;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,7 +115,7 @@ public class ChoiceHouse extends AppCompatActivity {
 
     private void getWhList() {
         final Request request = new Request.Builder()
-                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/GetWhList?userName=" + userBean.getUser())
+                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/GetWhList?userName=" + userBean.getUserId())
                 .get()
                 .build();
         //新建一个线程，用于得到服务器响应的参数
