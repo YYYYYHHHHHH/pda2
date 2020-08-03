@@ -245,7 +245,7 @@ public class ListActivity extends AppCompatActivity {
 
     private void checkBarCode(String barcodeStr) {
         final Request request = new Request.Builder()
-                .url("http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/GetBarStatus?barcode=" + barcodeStr)
+                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/GetBarStatus?barcode=" + barcodeStr)
                 .get()
                 .build();
         dialog = new ZLoadingDialog(ListActivity.this);
