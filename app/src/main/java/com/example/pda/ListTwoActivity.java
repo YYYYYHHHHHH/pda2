@@ -32,12 +32,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pda.bean.BarCodeBean;
-import com.example.pda.bean.BarCodeTwoBean;
-import com.example.pda.bean.BatCodeThreeBean;
 import com.example.pda.bean.UserBean;
-import com.example.pda.bean.globalbean.MyOkHttpClient;
-import com.example.pda.bean.globalbean.MyToast;
-import com.example.pda.commpont.MyTwoContent;
+import com.example.pda.commpont.MyContent;
 import com.example.pda.commpont.SlideLayout;
 import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
@@ -60,8 +56,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 @ContentView(R.layout.activity_list)
 public class ListTwoActivity extends AppCompatActivity {
@@ -86,18 +80,15 @@ public class ListTwoActivity extends AppCompatActivity {
     private ScanManager mScanManager;
     private ZLoadingDialog dialog;
     private UserBean userBean;
-    private String csId;
-    private String csName;
-    private Boolean isGroup;
+    private String cWhCode;
     private Set<SlideLayout> sets = new HashSet();
+    private Toast toast;
     private int soundid;
-    private Toast toast = MyToast.getToast();
-    private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
-    private ArrayList<MyTwoContent> strArr = null;
-    private AlertDialog.Builder alert;
-    private String numberOfGroups;
+    private final OkHttpClient client = new OkHttpClient();
+    private ArrayList<MyContent> strArr = null;
     private SharedPreferences setinfo;
     private Vibrator vibrator;
+    private final int MAX_BAR = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,22 +100,10 @@ public class ListTwoActivity extends AppCompatActivity {
         setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
         Intent intent = getIntent();
-        csId = intent.getStringExtra("csId");
-        csName = intent.getStringExtra("csName");
-        isGroup = intent.getBooleanExtra("isGroup", false);
-        numberOfGroups = intent.getStringExtra("numberOfGroups");
-        alert = new AlertDialog.Builder(ListTwoActivity.this);
+        cWhCode = intent.getStringExtra("cWhCode");
+        toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP, 0, 70);
         this.listView();
-    }
-
-    private Boolean checkNumberOfGroups() {
-        if ("空".equals(numberOfGroups) || strArr.size() < Integer.parseInt(numberOfGroups)) {
-            return true;
-        } else {
-            toast.setText("条码的数量不能多于选定组托数量");
-            toast.show();
-            return false;
-        }
     }
 
     private BroadcastReceiver mScanReceiver = new BroadcastReceiver() {
@@ -138,15 +117,18 @@ public class ListTwoActivity extends AppCompatActivity {
             android.util.Log.i("debug", "----codetype--" + temp);
             barcodeStr = new String(barcode, 0, barcodelen);
             android.util.Log.i("debug", "----code--" + barcodeStr);
-            if (strArr.contains(new MyTwoContent(barcodeStr))) {
+            if (strArr.contains(new MyContent(barcodeStr))) {
                 toast.setText("不能重复扫码！");
-                toast.setGravity(Gravity.TOP, 0, 70);
                 toast.show();
                 return;
             }
             if (!isScaning) {
-                isScaning = true;
-                checkBarCode(barcodeStr);
+                if (strArr.size() >= MAX_BAR) {
+                    toast.setText("一次扫入的条码不能超过【" + MAX_BAR + "】条");
+                } else {
+                    isScaning = true;
+                    checkBarCode(barcodeStr);
+                }
             }
         }
     };
@@ -159,6 +141,15 @@ public class ListTwoActivity extends AppCompatActivity {
         mScanManager.switchOutputMode(0);
         soundpool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 100); // MODE_RINGTONE
         soundid = soundpool.load("/etc/Scan_new.ogg", 1);
+    }
+
+    private void goToBottom() {
+        vibrator.vibrate(200);
+        scrollView.post(new Runnable() {
+            public void run() {
+                scrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        });
     }
 
     @Override
@@ -194,11 +185,6 @@ public class ListTwoActivity extends AppCompatActivity {
     private void initSubmit(View view) {
         if (strArr.size() <= 0) {
             toast.setText("没有要提交的条码");
-            toast.setGravity(Gravity.TOP, 0, 70);
-            toast.show();
-            return;
-        } else if (!"空".equals(numberOfGroups) && strArr.size() != Integer.parseInt(numberOfGroups)) {
-            toast.setText("扫描数量和组托数量不一");
             toast.show();
             return;
         }
@@ -207,7 +193,6 @@ public class ListTwoActivity extends AppCompatActivity {
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         submitBarCode();
                     }
                 })
@@ -224,21 +209,15 @@ public class ListTwoActivity extends AppCompatActivity {
         final String code = inputCode.getText().toString();
         if ("".equals(code)) {
             toast.setText("不能添加空条码");
-            toast.setGravity(Gravity.TOP, 0, 70);
             toast.show();
-
         } else {
-            if (strArr.contains(new MyTwoContent(code))) {
-                toast.setText("不能重复扫码！");
-                toast.setGravity(Gravity.TOP, 0, 70);
+            if (strArr.contains(new MyContent(code))) {
+                toast.setText("不能重复扫码");
                 toast.show();
                 return;
             }
-            if (checkNumberOfGroups()) {
-                checkBarCode(code);
-            }
+            checkBarCode(code);
         }
-
     }
 
     @Event(R.id.clear)
@@ -270,9 +249,10 @@ public class ListTwoActivity extends AppCompatActivity {
         inputCode.requestFocus();
     }
 
+
     private void checkBarCode(String barcodeStr) {
         final Request request = new Request.Builder()
-                .url("http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/GetBarStatusAndInvClass?barcode=" + barcodeStr)
+                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/CheckBarStatus?barcode=" + barcodeStr)
                 .get()
                 .build();
         dialog = new ZLoadingDialog(ListTwoActivity.this);
@@ -313,9 +293,11 @@ public class ListTwoActivity extends AppCompatActivity {
     }
 
     private void submitBarCode() {
-        String url = "http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/CommitBarToPackage?loginId=" + userBean.getStatus() + "&CustId=" + csId;
-        for (MyTwoContent myTwoContent : strArr) {
-            url += "&barcodes=" + myTwoContent.getContent();
+        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/ReturnBarfromStock?userName="
+                + userBean.getUserId()
+                + "&tDate=" + setinfo.getString("Date", "");
+        for (MyContent myContent : strArr) {
+            url += "&barcodes=" + myContent.getContent();
         }
         final Request request = new Request.Builder()
                 .url(url)
@@ -374,108 +356,60 @@ public class ListTwoActivity extends AppCompatActivity {
             if (msg.what == 1) {
                 String ReturnMessage = (String) msg.obj;
                 Log.i("获取的返回信息", ReturnMessage);
-                final BarCodeTwoBean barCodeTwoBean = new Gson().fromJson(ReturnMessage, BarCodeTwoBean.class);
-                int status = Integer.parseInt(barCodeTwoBean.getStatus());
-                String mesg = barCodeTwoBean.getMsg();
-                if (status < 0) {
+                BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
+                int status = Integer.parseInt(barCodeBean.getStatus());
+                String mesg = barCodeBean.getMsg();
+                if (status != 0) {
                     if (status == -100) {
                         mesg += "，或者扫描不清晰";
                     }
                     toast.setText(mesg);
-                    toast.setGravity(Gravity.TOP, 0, 70);
                     toast.show();
                 } else {
-                    if (!checkNumberOfGroups()) return;
-                    if (!"0".equals(barCodeTwoBean.getCustId()) && !barCodeTwoBean.getCustId().equals(csId)) {
-                        alert.setMessage("现在在为【" + csName + "】组托, 该批卷是为【" + barCodeTwoBean.getCustName() + "】生成的, 您确认组托吗")
-                                .setIcon(android.R.drawable.ic_dialog_info)
-                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        if (strArr.contains(new MyTwoContent(barcodeStr))) {
-                                            toast.setText("条码已存在！");
-                                            toast.setGravity(Gravity.TOP, 0, 70);
-                                            toast.show();
-                                            return;
-                                        }
-                                        MyTwoContent myTwoContent = new MyTwoContent(barcodeStr, barCodeTwoBean.getInvClass());
-                                        if (isGroup && strArr.size() != 0 && !strArr.get(0).getInvClass().equals(myTwoContent.getInvClass())) {
-                                            myTwoContent.setGroup(false);
-                                        }
-                                        strArr.add(myTwoContent);
-                                        MyAdapter myAdapter = new MyAdapter(ListTwoActivity.this, strArr);
-                                        listView.setAdapter(myAdapter);
-                                        numberText.setText("记数：" + strArr.size() + "件");
-                                        goToBottom();
-                                    }
-                                })
-                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        return;
-                                    }
-                                });
-                        alert.show();
-
-                    } else {
-                        MyTwoContent myTwoContent = new MyTwoContent(barcodeStr, barCodeTwoBean.getInvClass());
-                        if (isGroup && strArr.size() != 0 && !strArr.get(0).getInvClass().equals(myTwoContent.getInvClass())) {
-                            myTwoContent.setGroup(false);
-                        }
-                        strArr.add(myTwoContent);
-                        MyAdapter myAdapter = new ListTwoActivity.MyAdapter(ListTwoActivity.this, strArr);
-                        listView.setAdapter(myAdapter);
-                        numberText.setText("记数：" + strArr.size() + "件");
-                        goToBottom();
-                    }
+                    strArr.add(new MyContent(barcodeStr));
+                    MyAdapter myAdapter = new ListTwoActivity.MyAdapter(ListTwoActivity.this, strArr);
+                    listView.setAdapter(myAdapter);
+                    numberText.setText("记数：" + strArr.size() + "件");
+                    goToBottom();
                 }
             } else if (msg.what == 2) {
                 String ReturnMessage = (String) msg.obj;
                 Log.i("获取的返回信息", ReturnMessage);
-                BatCodeThreeBean barCodeBean = new Gson().fromJson(ReturnMessage, BatCodeThreeBean.class);
+                BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
                 int status = Integer.parseInt(barCodeBean.getStatus());
                 String mesg = barCodeBean.getMsg();
+
+                new AlertDialog.Builder(ListTwoActivity.this).setTitle("待入库单号号为：【" + mesg + "】")
+                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        }).show();
+//                toast.setText(mesg);
+//                toast.show();
                 if (status != 0) {
-                    toast.setText(mesg);
-                    toast.show();
+
                 } else {
                     strArr.clear();
                     MyAdapter myAdapter = new ListTwoActivity.MyAdapter(ListTwoActivity.this, strArr);
                     listView.setAdapter(myAdapter);
                     numberText.setText("记数：" + strArr.size() + "件");
-                    alert.setMessage("组托单号为：【" + mesg + "】")
-                            .setIcon(android.R.drawable.ic_dialog_info)
-                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            })
-                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            }).show();
-
                 }
             }
         }
     };
 
-    private void goToBottom() {
-        vibrator.vibrate(200);
-        scrollView.post(new Runnable() {
-            public void run() {
-                scrollView.fullScroll(View.FOCUS_DOWN);
-            }
-        });
-    }
-
     class MyAdapter extends BaseAdapter {
         private Context content;
-        private ArrayList<MyTwoContent> datas;
+        private ArrayList<MyContent> datas;
 
-        private MyAdapter(Context context, ArrayList<MyTwoContent> datas) {
+        private MyAdapter(Context context, ArrayList<MyContent> datas) {
             this.content = context;
             this.datas = datas;
         }
@@ -509,27 +443,20 @@ public class ListTwoActivity extends AppCompatActivity {
                 viewHolder = (testActivity.ViewHolder) convertView.getTag();
             }
             viewHolder.contentView.setText(datas.get(position).getContent());
-            if (!datas.get(position).getGroup()) {
-                viewHolder.contentView.setTextColor(Color.RED);
-            } else {
-                viewHolder.contentView.setTextColor(Color.BLACK);
-            }
+
             viewHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                 }
             });
-            final MyTwoContent myTwoContent = datas.get(position);
+            final MyContent myContent = datas.get(position);
             viewHolder.menuView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     SlideLayout slideLayout = (SlideLayout) v.getParent();
                     slideLayout.closeMenu(); //解决删除item后下一个item变成open状态问题
-                    datas.remove(myTwoContent);
+                    datas.remove(myContent);
                     numberText.setText("记数：" + strArr.size() + "件");
-                    if (datas.size() == 1) {
-                        datas.get(0).setGroup(true);
-                    }
                     notifyDataSetChanged();
                 }
             });
@@ -576,7 +503,6 @@ public class ListTwoActivity extends AppCompatActivity {
                 }
             }
         }
-
     }
 
     static class ViewHolder {
