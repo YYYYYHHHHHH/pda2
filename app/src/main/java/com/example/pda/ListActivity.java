@@ -88,6 +88,7 @@ public class ListActivity extends AppCompatActivity {
     private ArrayList<MyContent> strArr = null;
     private SharedPreferences setinfo;
     private Vibrator vibrator;
+    private final int MAX_BAR = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,8 +123,12 @@ public class ListActivity extends AppCompatActivity {
                 return;
             }
             if (!isScaning) {
-                isScaning = true;
-                checkBarCode(barcodeStr);
+                if (strArr.size() >= MAX_BAR) {
+                    toast.setText("一次扫入的条码不能超过【" + MAX_BAR + "】条");
+                } else {
+                    isScaning = true;
+                    checkBarCode(barcodeStr);
+                }
             }
         }
     };
@@ -288,10 +293,10 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void submitBarCode() {
-        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/CommitBarToStock?loginName="
+        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/CommitBarToStock?userName="
                 + userBean.getUserId()
                 + "&cWhCode=" + cWhCode
-                + "tDate=" + setinfo.getString("Date", "");
+                + "&tDate=" + setinfo.getString("Date", "");
         for (MyContent myContent : strArr) {
             url += "&barcodes=" + myContent.getContent();
         }
