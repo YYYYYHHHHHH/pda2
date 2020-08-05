@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.example.pda.bean.BarCodeBean;
 import com.example.pda.bean.UserBean;
+import com.example.pda.bean.globalbean.MyOkHttpClient;
 import com.example.pda.commpont.MyContent;
 import com.example.pda.commpont.SlideLayout;
 import com.google.gson.Gson;
@@ -84,7 +85,7 @@ public class ListActivity extends AppCompatActivity {
     private Set<SlideLayout> sets = new HashSet();
     private Toast toast;
     private int soundid;
-    private final OkHttpClient client = new OkHttpClient();
+    private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
     private ArrayList<MyContent> strArr = null;
     private SharedPreferences setinfo;
     private Vibrator vibrator;
