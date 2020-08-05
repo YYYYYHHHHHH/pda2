@@ -294,7 +294,7 @@ public class ListTwoActivity extends AppCompatActivity {
     }
 
     private void submitBarCode() {
-        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/ReturnBarfromStock?userName="
+        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/ReturnBarFromStock?userName="
                 + userBean.getUserId()
                 + "&tDate=" + setinfo.getString("Date", "");
         for (MyContent myContent : strArr) {
