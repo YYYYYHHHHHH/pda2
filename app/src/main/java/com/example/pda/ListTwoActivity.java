@@ -277,6 +277,7 @@ public class ListTwoActivity extends AppCompatActivity {
                     }
                 } catch (IOException e) {
                     dialog.cancel();
+                    isScaning = false;
                     e.printStackTrace();
                     if (e instanceof SocketTimeoutException) {
                         toast.setText("请求超时！");
