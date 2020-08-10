@@ -323,6 +323,35 @@
                 android:textColor="@color/black"
                 android:textSize="18dip"></TextView>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dip"
+            android:layout_marginBottom="3dip"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:layout_weight="4"
+                android:gravity="left"
+                android:text="@string/备注"
+                android:textColor="@color/black"
+                android:textSize="18dip"></TextView>
+
+            <TextView
+                android:id="@+id/cmemo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:layout_weight="2"
+                android:gravity="left"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="18dip"></TextView>
+        </LinearLayout>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

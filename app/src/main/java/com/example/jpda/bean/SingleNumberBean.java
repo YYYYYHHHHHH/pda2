@@ -11,7 +11,7 @@ public class SingleNumberBean {
     private String iNum;
     private String cWhName;
     private String cSOCode;
-    private String 备注;
+    private String cmemo;
 
     public String getStatus() {
         return status;
@@ -93,12 +93,11 @@ public class SingleNumberBean {
         this.cSOCode = cSOCode;
     }
 
-
-    public String get备注() {
-        return 备注;
+    public String getCmemo() {
+        return cmemo;
     }
 
-    public void set备注(String 备注) {
-        this.备注 = 备注;
+    public void setCmemo(String cmemo) {
+        this.cmemo = cmemo;
     }
 }

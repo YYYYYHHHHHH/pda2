@@ -69,6 +69,8 @@ public class ListFiveActivity extends AppCompatActivity {
     private Button clear;
     @ViewInject(R.id.cSOCode)
     private TextView cSOCode;
+    @ViewInject(R.id.cmemo)
+    private TextView cmemo;
 
     private final static String SCAN_ACTION = ScanManager.ACTION_DECODE;//default action
     private OkHttpClient okHttpClient = MyOkHttpClient.getOkHttpClient();
@@ -195,6 +197,7 @@ public class ListFiveActivity extends AppCompatActivity {
         cFree1.setText(bean.getCFree1());
         inum.setText(bean.getInum());
         cSOCode.setText(bean.getCSOCode());
+        cmemo.setText(bean.getCmemo());
     }
 
     private Handler mHandler = new Handler() {
@@ -219,7 +222,7 @@ public class ListFiveActivity extends AppCompatActivity {
                 SingleNumberBean bean = new Gson().fromJson(ReturnMessage, SingleNumberBean.class);
                 int status = Integer.parseInt(bean.getStatus());
                 if (status != 0) {
-                    String mesg = bean.get备注();
+                    String mesg = bean.getCmemo();
                     toast.setText(mesg);
                     toast.show();
                 } else {

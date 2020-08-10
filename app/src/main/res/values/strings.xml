@@ -39,6 +39,7 @@
     <string name="规格型号">规格型号：</string>
     <string name="产品要求码">产品要求码</string>
     <string name="发货数量">发货数量：</string>
+    <string name="备注">备注：</string>
 
 
 </resources>
