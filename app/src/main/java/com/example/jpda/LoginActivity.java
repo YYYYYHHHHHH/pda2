@@ -53,6 +53,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
 @ContentView(R.layout.activity_loginactivity)
 public class LoginActivity extends Activity implements View.OnLayoutChangeListener {
     //用xUtils进行控件绑定
@@ -106,7 +107,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         changeChoiceDate();
         getPermission();
         onLongClick();
-        checkVersion();
+//        checkVersion();
     }
 
     private void checkVersion() {
@@ -129,10 +130,11 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     private void onClick(View view) {
         String username = name.getText().toString().trim();
         String password = pass.getText().toString().trim();
-        if (preCheck()){
+        if (preCheck()) {
             postRequest(username, password);
         }
     }
+
     @Event(value = R.id.ChoiceDate)
     private void ChoiceDateClick(View view) {
 
@@ -142,7 +144,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                 cuureDate = DateList.get(options1);
                 changeChoiceDate();
             }
-        }) .setDividerColor(Color.BLACK)
+        }).setDividerColor(Color.BLACK)
                 .setTextColorCenter(Color.BLACK) //设置选中项文字颜色
                 .setContentTextSize(20)//设置文字大小
                 .setOutSideCancelable(false)// default is true
@@ -155,6 +157,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         pvOptions.show();
 
     }
+
     private boolean preCheck() {
         if ("true".equals(setinfo.getString("Version", "false"))) {
             this.finish();
@@ -194,6 +197,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
             }
         });
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -245,14 +249,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                 try {
                     //回调
                     response = client.newCall(request).execute();
-                    if (response.isSuccessful()) {
-                        //将服务器响应的参数response.body().string())发送到hanlder中，并更新ui
-                        mHandler.obtainMessage(1, response.body().string()).sendToTarget();
-
-                    } else {
-                        dialog.cancel();
-                        throw new IOException("Unexpected code:" + response);
-                    }
+                    mHandler.obtainMessage(1, response).sendToTarget();
                 } catch (IOException e) {
                     dialog.cancel();
                     e.printStackTrace();
@@ -272,8 +269,20 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            dialog.cancel();
+            Response response = (Response) msg.obj;
+            if (!response.isSuccessful()) {
+                toast.setText("服务器出错");
+                toast.show();
+                return;
+            }
             if (msg.what == 1) {
-                String ReturnMessage = (String) msg.obj;
+                String ReturnMessage = null;
+                try {
+                    ReturnMessage = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 Log.i("获取的返回信息", ReturnMessage);
                 final UserBean userBean = new Gson().fromJson(ReturnMessage, UserBean.class);
                 final int status = Integer.parseInt(userBean.getStatus());

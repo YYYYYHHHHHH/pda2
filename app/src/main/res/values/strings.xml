@@ -29,4 +29,16 @@
     <string name="组托单">组托单</string>
     <string name="装箱单">装箱单</string>
 
+    <string name="发货订单">发货单号：</string>
+    <string name="发货日期">发货日期：</string>
+    <string name="行次">行次：</string>
+    <string name="客户名称">客户名称：</string>
+    <string name="仓库">仓库：</string>
+    <string name="存货编码">存货编码：</string>
+    <string name="存货名称">存货名称：</string>
+    <string name="规格型号">规格型号：</string>
+    <string name="产品要求码">产品要求码</string>
+    <string name="发货数量">发货数量：</string>
+
+
 </resources>

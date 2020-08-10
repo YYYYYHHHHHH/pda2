@@ -8,9 +8,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/cover"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/cover"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <provider
@@ -27,13 +27,15 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-        <activity android:name="com.example.jpda.ListActivity" android:parentActivityName="com.example.jpda.ChoiceHouse" android:label="待入库">
+        <activity android:name=".ListFiveActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="发货拣货">
+        </activity>
+        <activity android:name="com.example.jpda.ListActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="待入库">
 
         </activity>
-        <activity android:name="com.example.jpda.ListFourActivity" android:parentActivityName="com.example.jpda.ChoiceHouse" android:label="其他出库">
+        <activity android:name="com.example.jpda.ListFourActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="其他出库">
 
         </activity>
-        <activity android:name="com.example.jpda.ListThreeActivity" android:parentActivityName="com.example.jpda.ChoiceHouse" android:label="条码不拆托返工">
+        <activity android:name="com.example.jpda.ListThreeActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="条码不拆托返工">
 
         </activity>
         <activity android:name="com.example.jpda.ListTwoActivity" android:parentActivityName="com.example.jpda.GroupUserChoiceActivity" android:label="条码拆托返工">
@@ -44,12 +46,12 @@
 
         </activity>
 
-        <activity android:name="com.example.jpda.LoginActivity" android:windowSoftInputMode="stateHidden|stateUnchanged|adjustResize" android:icon="@mipmap/user_icon">
+        <activity android:name="com.example.jpda.LoginActivity" android:windowSoftInputMode="stateHidden|stateUnchanged|adjustResize">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"></action>
+                <category android:name="android.intent.category.LAUNCHER"></category>
             </intent-filter>
+
         </activity>
 
         <activity android:name="com.example.jpda.ChoiceHouse" android:parentActivityName="com.example.jpda.LoginActivity" android:label="选择待入库仓库">
