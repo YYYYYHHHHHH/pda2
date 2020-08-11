@@ -1,5 +1,9 @@
 package com.example.jpda.bean;
 
+import java.util.Objects;
+
+import androidx.annotation.Nullable;
+
 public class SingleNumberBean {
     private String status;
     private String cDLCode;
@@ -12,6 +16,38 @@ public class SingleNumberBean {
     private String cWhName;
     private String cSOCode;
     private String cmemo;
+    private String 备注;
+
+    public String get备注() {
+        return 备注;
+    }
+
+    public void set备注(String 备注) {
+        this.备注 = 备注;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SingleNumberBean bean = (SingleNumberBean) o;
+        return Objects.equals(status, bean.status) &&
+                Objects.equals(cDLCode, bean.cDLCode) &&
+                Objects.equals(cCusName, bean.cCusName) &&
+                Objects.equals(ddate, bean.ddate) &&
+                Objects.equals(cInvName, bean.cInvName) &&
+                Objects.equals(cInvStd, bean.cInvStd) &&
+                Objects.equals(cFree1, bean.cFree1) &&
+                Objects.equals(iNum, bean.iNum) &&
+                Objects.equals(cWhName, bean.cWhName) &&
+                Objects.equals(cSOCode, bean.cSOCode) &&
+                Objects.equals(cmemo, bean.cmemo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(status, cDLCode, cCusName, ddate, cInvName, cInvStd, cFree1, iNum, cWhName, cSOCode, cmemo);
+    }
 
     public String getStatus() {
         return status;

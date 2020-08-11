@@ -83,6 +83,7 @@ public class ListFiveActivity extends AppCompatActivity {
     private SoundPool soundpool = null;
     private ScanManager mScanManager;
     private int soundid;
+    private SingleNumberBean singleNumberBean = new SingleNumberBean();
 
 
     @Override
@@ -116,7 +117,14 @@ public class ListFiveActivity extends AppCompatActivity {
 
     @Event(R.id.submit)
     private void ClickSubmit(View view) {
-
+        if (singleNumberBean.equals(new SingleNumberBean())) {
+            toast.setText("请先扫描单号");
+            toast.show();
+        } else {
+            Intent intent = new Intent(this, ListSixActivity.class);
+            intent.putExtra("autoid", barcodeStr);
+            startActivity(intent);
+        }
     }
 
     private void getMes(String barcodeStr) {
@@ -188,6 +196,7 @@ public class ListFiveActivity extends AppCompatActivity {
     }
 
     private void render(SingleNumberBean bean) {
+        singleNumberBean = bean;
         cDLCode.setText(bean.getCDLCode());
         ddate.setText(bean.getDdate());
         cCusName.setText(bean.getCCusName());
@@ -222,7 +231,7 @@ public class ListFiveActivity extends AppCompatActivity {
                 SingleNumberBean bean = new Gson().fromJson(ReturnMessage, SingleNumberBean.class);
                 int status = Integer.parseInt(bean.getStatus());
                 if (status != 0) {
-                    String mesg = bean.getCmemo();
+                    String mesg = bean.get备注();
                     toast.setText(mesg);
                     toast.show();
                 } else {

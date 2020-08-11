@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,8 +32,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jpda.bean.BarCodeBean;
+import com.example.jpda.bean.PDASavedBean;
+import com.example.jpda.bean.PDASavedRows;
 import com.example.jpda.bean.UserBean;
 import com.example.jpda.bean.globalbean.MyOkHttpClient;
+import com.example.jpda.bean.globalbean.MyToast;
 import com.example.jpda.commpont.MyContent;
 import com.example.jpda.commpont.SlideLayout;
 import com.google.gson.Gson;
@@ -58,7 +62,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 @ContentView(R.layout.activity_list)
-public class ListThreeActivity extends AppCompatActivity {
+public class ListSixActivity extends AppCompatActivity {
     @ViewInject(R.id.numberText)
     private TextView numberText;
     @ViewInject(R.id.inputCode)
@@ -80,9 +84,9 @@ public class ListThreeActivity extends AppCompatActivity {
     private ScanManager mScanManager;
     private ZLoadingDialog dialog;
     private UserBean userBean;
-    private String cWhCode;
+    private String autoid;
     private Set<SlideLayout> sets = new HashSet();
-    private Toast toast;
+    private Toast toast = MyToast.getToast();
     private int soundid;
     private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
     private ArrayList<MyContent> strArr = null;
@@ -99,10 +103,6 @@ public class ListThreeActivity extends AppCompatActivity {
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
-        Intent intent = getIntent();
-        cWhCode = intent.getStringExtra("cWhCode");
-        toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP, 0, 70);
         this.listView();
     }
 
@@ -152,11 +152,86 @@ public class ListThreeActivity extends AppCompatActivity {
         });
     }
 
+    private void initPicking() {
+        final Request request = new Request.Builder()
+                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/GetBarsFromPDASaved?autoId=" + autoid)
+                .get()
+                .build();
+        dialog = new ZLoadingDialog(ListSixActivity.this);
+        dialog.setLoadingBuilder(Z_TYPE.DOUBLE_CIRCLE)//设置类型
+                .setLoadingColor(Color.BLACK)//颜色
+                .setHintText("加载数据中")
+                .show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Response response = client.newCall(request).execute();
+                    mHandler.obtainMessage(3, response).sendToTarget();
+                } catch (IOException e) {
+                    dialog.cancel();
+                    isScaning = false;
+                    e.printStackTrace();
+                    if (e instanceof SocketTimeoutException) {
+                        toast.setText("请求超时！");
+                        toast.show();
+                    }
+                    if (e instanceof ConnectException) {
+                        toast.setText("和服务器连接异常！");
+                        toast.show();
+
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private void deletLocalSaveCloud(String barcodeStr) {
+        final Request request = new Request.Builder()
+                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/DeleteBarFromPDA?autoId="
+                        + autoid
+                        + "&barcode=" +  barcodeStr
+                        + "&LoginUser" + userBean.getUser())
+                .get()
+                .build();
+        dialog = new ZLoadingDialog(ListSixActivity.this);
+        dialog.setLoadingBuilder(Z_TYPE.DOUBLE_CIRCLE)//设置类型
+                .setLoadingColor(Color.BLACK)//颜色
+                .setHintText("同步中")
+                .show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Response response = client.newCall(request).execute();
+                    mHandler.obtainMessage(4, response).sendToTarget();
+                } catch (IOException e) {
+                    dialog.cancel();
+                    isScaning = false;
+                    e.printStackTrace();
+                    if (e instanceof SocketTimeoutException) {
+                        toast.setText("请求超时！");
+                        toast.show();
+                    }
+                    if (e instanceof ConnectException) {
+                        toast.setText("和服务器连接异常！");
+                        toast.show();
+
+                    }
+                }
+            }
+        }).start();
+
+    }
+
     @Override
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        Intent intent = getIntent();
+        autoid = intent.getStringExtra("autoid");
         initScan();
+        initPicking();
 //        showScanResult.setText("");
         IntentFilter filter = new IntentFilter();
         int[] idbuf = new int[]{PropertyID.WEDGE_INTENT_ACTION_NAME, PropertyID.WEDGE_INTENT_DATA_STRING_TAG};
@@ -188,7 +263,7 @@ public class ListThreeActivity extends AppCompatActivity {
             toast.show();
             return;
         }
-        new AlertDialog.Builder(ListThreeActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
+        new AlertDialog.Builder(ListSixActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -222,13 +297,13 @@ public class ListThreeActivity extends AppCompatActivity {
 
     @Event(R.id.clear)
     private void initClaer(View view) {
-        new AlertDialog.Builder(ListThreeActivity.this).setTitle("确认要清空吗")
+        new AlertDialog.Builder(ListSixActivity.this).setTitle("确认要清空吗")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         strArr = new ArrayList<>();
-                        MyAdapter myAdapter = new ListThreeActivity.MyAdapter(ListThreeActivity.this, strArr);
+                        MyAdapter myAdapter = new ListSixActivity.MyAdapter(ListSixActivity.this, strArr);
                         listView.setAdapter(myAdapter);
                         numberText.setText("记数：" + strArr.size() + "件");
                         inputCode.setText("");
@@ -252,10 +327,12 @@ public class ListThreeActivity extends AppCompatActivity {
 
     private void checkBarCode(String barcodeStr) {
         final Request request = new Request.Builder()
-                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/CheckBarStatus?barcode=" + barcodeStr)
+                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/CheckBarInfoAndSave?barcode=" + barcodeStr
+                        +"&autoid=" + autoid
+                        +"&LoginUser=" + userBean.getUser())
                 .get()
                 .build();
-        dialog = new ZLoadingDialog(ListThreeActivity.this);
+        dialog = new ZLoadingDialog(ListSixActivity.this);
         dialog.setLoadingBuilder(Z_TYPE.DOUBLE_CIRCLE)//设置类型
                 .setLoadingColor(Color.BLACK)//颜色
                 .setHintText("检查条码中")
@@ -288,8 +365,9 @@ public class ListThreeActivity extends AppCompatActivity {
     }
 
     private void submitBarCode() {
-        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/ReturnBarFromStockOri?userName="
+        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/CommitBarToStock?userName="
                 + userBean.getUserId()
+                + "&whCode=" + autoid
                 + "&tDate=" + setinfo.getString("Date", "");
         for (MyContent myContent : strArr) {
             url += "&barcodes=" + myContent.getContent();
@@ -298,7 +376,7 @@ public class ListThreeActivity extends AppCompatActivity {
                 .url(url)
                 .get()
                 .build();
-        dialog = new ZLoadingDialog(ListThreeActivity.this);
+        dialog = new ZLoadingDialog(ListSixActivity.this);
         dialog.setLoadingBuilder(Z_TYPE.DOUBLE_CIRCLE)//设置类型
                 .setLoadingColor(Color.BLACK)//颜色
                 .setHintText("提交中")
@@ -327,13 +405,11 @@ public class ListThreeActivity extends AppCompatActivity {
                 }
             }
         }).start();
-
-
     }
 
     private void listView() {
         strArr = new ArrayList<>();
-        MyAdapter myAdapter = new ListThreeActivity.MyAdapter(this, strArr);
+        MyAdapter myAdapter = new ListSixActivity.MyAdapter(this, strArr);
         listView.setAdapter(myAdapter);
     }
 
@@ -348,13 +424,13 @@ public class ListThreeActivity extends AppCompatActivity {
                 toast.show();
                 return;
             }
+            String ReturnMessage = null;
+            try {
+                ReturnMessage = (String) response.body().string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             if (msg.what == 1) {
-                String ReturnMessage = null;
-                try {
-                    ReturnMessage = response.body().string();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 Log.i("获取的返回信息", ReturnMessage);
                 BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
                 int status = Integer.parseInt(barCodeBean.getStatus());
@@ -367,35 +443,62 @@ public class ListThreeActivity extends AppCompatActivity {
                     toast.show();
                 } else {
                     strArr.add(new MyContent(barcodeStr));
-                    MyAdapter myAdapter = new ListThreeActivity.MyAdapter(ListThreeActivity.this, strArr);
+                    MyAdapter myAdapter = new ListSixActivity.MyAdapter(ListSixActivity.this, strArr);
                     listView.setAdapter(myAdapter);
                     numberText.setText("记数：" + strArr.size() + "件");
                     goToBottom();
                 }
             } else if (msg.what == 2) {
-                String ReturnMessage = null;
-                try {
-                    ReturnMessage = response.body().string();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 Log.i("获取的返回信息", ReturnMessage);
                 BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
                 int status = Integer.parseInt(barCodeBean.getStatus());
                 String mesg = barCodeBean.getMsg();
-
                 if (status != 0) {
                     toast.setText(mesg);
                     toast.show();
                 } else {
+                    new AlertDialog.Builder(ListSixActivity.this).setTitle("待入库单号号为：【" + mesg + "】")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            }).show();
                     strArr.clear();
-                    MyAdapter myAdapter = new ListThreeActivity.MyAdapter(ListThreeActivity.this, strArr);
+                    MyAdapter myAdapter = new ListSixActivity.MyAdapter(ListSixActivity.this, strArr);
                     listView.setAdapter(myAdapter);
                     numberText.setText("记数：" + strArr.size() + "件");
                 }
+            } else if (msg.what == 3) {
+                handlerThree(ReturnMessage);
+            } else if (msg.what == 4) {
+                handlerFour(ReturnMessage);
             }
         }
     };
+    private void handlerThree(String ReturnMessage) {
+        PDASavedBean bean = new Gson().fromJson(ReturnMessage, PDASavedBean.class);
+        PDASavedRows[] rows = bean.getRows();
+        for (int i = 0; i < rows.length; i++) {
+            strArr.add(new MyContent(rows[i].getScancode()));
+        }
+        MyAdapter myAdapter = new ListSixActivity.MyAdapter(this, strArr);
+        listView.setAdapter(myAdapter);
+        numberText.setText("记数：" + strArr.size() + "件");
+    }
+    private void handlerFour(String ReturnMessage) {
+        BarCodeBean bean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
+        if (!"0".equals(bean.getStatus())) {
+            toast.setText(bean.getMsg());
+            toast.show();
+        }
+        initPicking();
+    }
 
     class MyAdapter extends BaseAdapter {
         private Context content;
@@ -448,13 +551,14 @@ public class ListThreeActivity extends AppCompatActivity {
                     SlideLayout slideLayout = (SlideLayout) v.getParent();
                     slideLayout.closeMenu(); //解决删除item后下一个item变成open状态问题
                     datas.remove(myContent);
-                    numberText.setText("记数：" + strArr.size() + "件");
-                    notifyDataSetChanged();
+                    deletLocalSaveCloud(myContent.getContent());
+//                    numberText.setText("记数：" + strArr.size() + "件");
+//                    notifyDataSetChanged();
                 }
             });
 
             SlideLayout slideLayout = (SlideLayout) convertView;
-            slideLayout.setOnStateChangeListener(new ListThreeActivity.MyAdapter.MyOnStateChangeListener());
+            slideLayout.setOnStateChangeListener(new ListSixActivity.MyAdapter.MyOnStateChangeListener());
 
 
             return convertView;
