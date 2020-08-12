@@ -102,64 +102,79 @@ public class BaseListActivity extends AppCompatActivity implements ImList {
         scrollView = findViewById(R.id.scrollview);
         //重写onCreate的时候要记得给strArr赋值
         strArr = new ArrayList<>();
+        initInputButton();
+        initSubmit();
+        initClaer();
     }
 
-    @Event(R.id.inputButton)
-    protected void initInputButton(View view) {
-        final String code = inputCode.getText().toString();
-        if ("".equals(code)) {
-            toast.setText("不能添加空条码");
-            toast.show();
-        } else {
-            if (strArr.contains(new MyContent(code))) {
-                toast.setText("不能重复扫码");
-                toast.show();
-                return;
+    protected void initInputButton() {
+        inputButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String code = inputCode.getText().toString();
+                if ("".equals(code)) {
+                    toast.setText("不能添加空条码");
+                    toast.show();
+                } else {
+                    if (strArr.contains(new MyContent(code))) {
+                        toast.setText("不能重复扫码");
+                        toast.show();
+                        return;
+                    }
+                    checkBarCode(code);
+                }
             }
-            checkBarCode(code);
-        }
+        });
     }
 
-    @Event(R.id.submit)
-    protected void initSubmit(View view) {
-        if (strArr.size() <= 0) {
-            toast.setText("没有要提交的条码");
-            toast.show();
-            return;
-        }
-        new AlertDialog.Builder(this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        submitBarCode();
-                    }
-                })
-                .setNegativeButton("返回", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // 点击“返回”后的操作,这里不设置没有任何操作
-                    }
-                }).show();
+    protected void initSubmit() {
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (strArr.size() <= 0) {
+                    toast.setText("没有要提交的条码");
+                    toast.show();
+                    return;
+                }
+                new AlertDialog.Builder(BaseListActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
+                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                submitBarCode();
+                            }
+                        })
+                        .setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 点击“返回”后的操作,这里不设置没有任何操作
+                            }
+                        }).show();
+            }
+        });
     }
 
-    @Event(R.id.clear)
-    protected void initClaer(View view) {
-        new AlertDialog.Builder(this).setTitle("确认要清空吗")
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        strArr.clear();
-                        renderList();
-                    }
-                })
-                .setNegativeButton("返回", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // 点击“返回”后的操作,这里不设置没有任何操作
-                    }
-                }).show();
+    protected void initClaer() {
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(BaseListActivity.this).setTitle("确认要清空吗")
+                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                strArr.clear();
+                                renderList();
+                            }
+                        })
+                        .setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 点击“返回”后的操作,这里不设置没有任何操作
+                            }
+                        }).show();
+            }
+        });
     }
 
     /**

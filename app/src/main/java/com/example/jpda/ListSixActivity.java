@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jpda.bean.BarCodeBean;
+import com.example.jpda.bean.BarCodeFourBean;
+import com.example.jpda.bean.GetBarDetailsBean;
+import com.example.jpda.bean.GetBarDetailsRows;
 import com.example.jpda.bean.PDASavedBean;
 import com.example.jpda.bean.PDASavedRows;
 import com.example.jpda.bean.UserBean;
@@ -93,6 +97,7 @@ public class ListSixActivity extends AppCompatActivity {
     private SharedPreferences setinfo;
     private Vibrator vibrator;
     private final int MAX_BAR = 100;
+    private int allSize = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,7 +195,7 @@ public class ListSixActivity extends AppCompatActivity {
         final Request request = new Request.Builder()
                 .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/DeleteBarFromPDA?autoId="
                         + autoid
-                        + "&barcode=" +  barcodeStr
+                        + "&barcode=" + barcodeStr
                         + "&LoginUser" + userBean.getUser())
                 .get()
                 .build();
@@ -263,7 +268,7 @@ public class ListSixActivity extends AppCompatActivity {
             toast.show();
             return;
         }
-        new AlertDialog.Builder(ListSixActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
+        new AlertDialog.Builder(ListSixActivity.this).setTitle("一共有" + strArr.size() + "码，" + allSize + "件，确认要提交吗")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -305,7 +310,8 @@ public class ListSixActivity extends AppCompatActivity {
                         strArr = new ArrayList<>();
                         MyAdapter myAdapter = new ListSixActivity.MyAdapter(ListSixActivity.this, strArr);
                         listView.setAdapter(myAdapter);
-                        numberText.setText("记数：" + strArr.size() + "件");
+                        allSize = 0;
+                        numberText.setText(strArr.size() + "码(" + allSize + "件)");
                         inputCode.setText("");
                     }
                 })
@@ -328,8 +334,8 @@ public class ListSixActivity extends AppCompatActivity {
     private void checkBarCode(String barcodeStr) {
         final Request request = new Request.Builder()
                 .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/CheckBarInfoAndSave?barcode=" + barcodeStr
-                        +"&autoid=" + autoid
-                        +"&LoginUser=" + userBean.getUser())
+                        + "&autoid=" + autoid
+                        + "&LoginUser=" + userBean.getUser())
                 .get()
                 .build();
         dialog = new ZLoadingDialog(ListSixActivity.this);
@@ -407,6 +413,42 @@ public class ListSixActivity extends AppCompatActivity {
         }).start();
     }
 
+    private void showBarDetail(String barcodeStr) {
+        final Request request = new Request.Builder()
+                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/GetBarsDetails?barcode=" + barcodeStr)
+                .get()
+                .build();
+        dialog = new ZLoadingDialog(ListSixActivity.this);
+        dialog.setLoadingBuilder(Z_TYPE.DOUBLE_CIRCLE)//设置类型
+                .setLoadingColor(Color.BLACK)//颜色
+                .setHintText("获取件中")
+                .show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Response response = null;
+                try {
+                    //回调
+                    response = client.newCall(request).execute();
+                    mHandler.obtainMessage(5, response).sendToTarget();
+                } catch (IOException e) {
+                    dialog.cancel();
+                    isScaning = false;
+                    e.printStackTrace();
+                    if (e instanceof SocketTimeoutException) {
+                        toast.setText("请求超时！");
+                        toast.show();
+                    }
+                    if (e instanceof ConnectException) {
+                        toast.setText("和服务器连接异常！");
+                        toast.show();
+
+                    }
+                }
+            }
+        }).start();
+    }
+
     private void listView() {
         strArr = new ArrayList<>();
         MyAdapter myAdapter = new ListSixActivity.MyAdapter(this, strArr);
@@ -418,7 +460,7 @@ public class ListSixActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             isScaning = false;
             dialog.cancel();
-            Response response = (Response)msg.obj;
+            Response response = (Response) msg.obj;
             if (!response.isSuccessful()) {
                 toast.setText("服务器出错");
                 toast.show();
@@ -432,7 +474,7 @@ public class ListSixActivity extends AppCompatActivity {
             }
             if (msg.what == 1) {
                 Log.i("获取的返回信息", ReturnMessage);
-                BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
+                BarCodeFourBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeFourBean.class);
                 int status = Integer.parseInt(barCodeBean.getStatus());
                 String mesg = barCodeBean.getMsg();
                 if (status != 0) {
@@ -444,8 +486,9 @@ public class ListSixActivity extends AppCompatActivity {
                 } else {
                     strArr.add(new MyContent(barcodeStr));
                     MyAdapter myAdapter = new ListSixActivity.MyAdapter(ListSixActivity.this, strArr);
+                    allSize += Integer.parseInt(barCodeBean.getiNum());
                     listView.setAdapter(myAdapter);
-                    numberText.setText("记数：" + strArr.size() + "件");
+                    numberText.setText(strArr.size() + "码(" + allSize + "件)");
                     goToBottom();
                 }
             } else if (msg.what == 2) {
@@ -472,31 +515,57 @@ public class ListSixActivity extends AppCompatActivity {
                     strArr.clear();
                     MyAdapter myAdapter = new ListSixActivity.MyAdapter(ListSixActivity.this, strArr);
                     listView.setAdapter(myAdapter);
-                    numberText.setText("记数：" + strArr.size() + "件");
+                    numberText.setText(strArr.size() + "件");
                 }
             } else if (msg.what == 3) {
                 handlerThree(ReturnMessage);
             } else if (msg.what == 4) {
                 handlerFour(ReturnMessage);
+            } else if (msg.what == 5) {
+                handlerFive(ReturnMessage);
             }
         }
     };
+
+    private void handlerFive(String ReturnMessage) {
+        GetBarDetailsBean bean = new Gson().fromJson(ReturnMessage, GetBarDetailsBean.class);
+        GetBarDetailsRows[] rows = bean.getRows();
+        String[] sr = new String[rows.length];
+        for (int i = 0; i < rows.length; i++) {
+            sr[i] = rows[i].getBarcode();
+        }
+        final AlertDialog.Builder builder =new AlertDialog.Builder(this);
+        builder.setTitle("共【" + bean.get条码明细() + "条】明细");
+        builder.setItems(sr, null);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.setCancelable(true);
+        builder.create().show();
+    }
+
     private void handlerThree(String ReturnMessage) {
         PDASavedBean bean = new Gson().fromJson(ReturnMessage, PDASavedBean.class);
         PDASavedRows[] rows = bean.getRows();
         for (int i = 0; i < rows.length; i++) {
             strArr.add(new MyContent(rows[i].getScancode()));
+            allSize += Integer.parseInt(rows[i].getiNum());
         }
         MyAdapter myAdapter = new ListSixActivity.MyAdapter(this, strArr);
         listView.setAdapter(myAdapter);
-        numberText.setText("记数：" + strArr.size() + "件");
+        numberText.setText(strArr.size() + "码(" + allSize + "件)");
     }
+
     private void handlerFour(String ReturnMessage) {
         BarCodeBean bean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
         if (!"0".equals(bean.getStatus())) {
             toast.setText(bean.getMsg());
             toast.show();
         }
+
         initPicking();
     }
 
@@ -538,13 +607,14 @@ public class ListSixActivity extends AppCompatActivity {
                 viewHolder = (testActivity.ViewHolder) convertView.getTag();
             }
             viewHolder.contentView.setText(datas.get(position).getContent());
-
+            final MyContent myContent = datas.get(position);
             viewHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    showBarDetail(myContent.getContent());
                 }
             });
-            final MyContent myContent = datas.get(position);
+
             viewHolder.menuView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -552,7 +622,7 @@ public class ListSixActivity extends AppCompatActivity {
                     slideLayout.closeMenu(); //解决删除item后下一个item变成open状态问题
                     datas.remove(myContent);
                     deletLocalSaveCloud(myContent.getContent());
-//                    numberText.setText("记数：" + strArr.size() + "件");
+//                    numberText.setText(strArr.size() + "件");
 //                    notifyDataSetChanged();
                 }
             });
