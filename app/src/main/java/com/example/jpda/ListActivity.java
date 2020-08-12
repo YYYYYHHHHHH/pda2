@@ -374,7 +374,12 @@ public class ListActivity extends AppCompatActivity {
                     goToBottom();
                 }
             } else if (msg.what == 2) {
-                String ReturnMessage = response.body().toString();
+                String ReturnMessage = null;
+                try {
+                    ReturnMessage = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 Log.i("获取的返回信息", ReturnMessage);
                 BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
                 int status = Integer.parseInt(barCodeBean.getStatus());
@@ -383,22 +388,12 @@ public class ListActivity extends AppCompatActivity {
                     toast.setText(mesg);
                     toast.show();
                 } else {
-                    new AlertDialog.Builder(ListActivity.this).setTitle("待入库单号号为：【" + mesg + "】")
-                            .setIcon(android.R.drawable.ic_dialog_info)
-                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .setNegativeButton("返回", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            }).show();
                     strArr.clear();
                     MyAdapter myAdapter = new ListActivity.MyAdapter(ListActivity.this, strArr);
                     listView.setAdapter(myAdapter);
                     numberText.setText("记数：" + strArr.size() + "件");
+                    toast.setText("入库成功");
+                    toast.show();
                 }
             }
         }

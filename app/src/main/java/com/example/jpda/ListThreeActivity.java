@@ -392,6 +392,8 @@ public class ListThreeActivity extends AppCompatActivity {
                     MyAdapter myAdapter = new ListThreeActivity.MyAdapter(ListThreeActivity.this, strArr);
                     listView.setAdapter(myAdapter);
                     numberText.setText("记数：" + strArr.size() + "件");
+                    toast.setText("提交成功");
+                    toast.show();
                 }
             }
         }

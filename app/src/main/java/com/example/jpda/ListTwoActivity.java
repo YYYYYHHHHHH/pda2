@@ -74,6 +74,7 @@ public class ListTwoActivity extends AppCompatActivity {
     private Button submit;
     @ViewInject(R.id.scrollview)
     private ScrollView scrollView;
+
     private final static String SCAN_ACTION = ScanManager.ACTION_DECODE;//default action
     private boolean isScaning = false;
     private SoundPool soundpool = null;
@@ -158,7 +159,6 @@ public class ListTwoActivity extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onResume();
         initScan();
-//        showScanResult.setText("");
         IntentFilter filter = new IntentFilter();
         int[] idbuf = new int[]{PropertyID.WEDGE_INTENT_ACTION_NAME, PropertyID.WEDGE_INTENT_DATA_STRING_TAG};
         String[] value_buf = mScanManager.getParameterString(idbuf);
@@ -329,8 +329,6 @@ public class ListTwoActivity extends AppCompatActivity {
                 }
             }
         }).start();
-
-
     }
 
     private void listView() {
@@ -344,7 +342,7 @@ public class ListTwoActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             isScaning = false;
             dialog.cancel();
-            Response response = (Response)msg.obj;
+            Response response = (Response) msg.obj;
             if (!response.isSuccessful()) {
                 toast.setText("服务器出错");
                 toast.show();

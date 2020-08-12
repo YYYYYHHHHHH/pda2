@@ -19,6 +19,7 @@ import com.example.jpda.bean.WhBean;
 import com.example.jpda.bean.WhListBean;
 import com.example.jpda.bean.globalbean.MyOkHttpClient;
 import com.example.jpda.bean.globalbean.MyToast;
+import com.example.jpda.ui.ListOneActivity;
 import com.google.gson.Gson;
 
 import org.xutils.view.annotation.ContentView;
@@ -104,7 +105,7 @@ public class ChoiceHouse extends AppCompatActivity {
             toast.setText("请先选择仓库");
             toast.show();
         } else {
-            Intent i = new Intent(ChoiceHouse.this, ListActivity.class);
+            Intent i = new Intent(ChoiceHouse.this, ListOneActivity.class);
             i.putExtra("cWhCode", cWhCode);
             startActivity(i);
         }

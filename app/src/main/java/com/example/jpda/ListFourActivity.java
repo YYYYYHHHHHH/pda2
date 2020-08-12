@@ -388,7 +388,7 @@ public class ListFourActivity extends AppCompatActivity {
                     toast.setText(mesg);
                     toast.show();
                 } else {
-                    new AlertDialog.Builder(ListFourActivity.this).setTitle("待入库单号号为：【" + mesg + "】")
+                    new AlertDialog.Builder(ListFourActivity.this).setTitle("其他出库单号为：【" + mesg + "】")
                             .setIcon(android.R.drawable.ic_dialog_info)
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override

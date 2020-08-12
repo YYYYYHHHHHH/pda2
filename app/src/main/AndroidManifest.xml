@@ -22,20 +22,16 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_provider_paths"/>
         </provider>
-        <activity
-            android:name="com.example.jpda.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+
         <activity android:name=".ListFiveActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="发货拣货">
         </activity>
-        <activity android:name="com.example.jpda.ListActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="待入库">
+        <activity android:name="com.example.jpda.ui.ListOneActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="待入库">
 
         </activity>
         <activity android:name="com.example.jpda.ListFourActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="其他出库">
 
         </activity>
-        <activity android:name="com.example.jpda.ListThreeActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="条码不拆托返工">
+        <activity android:name="com.example.jpda.ListThreeActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="条码返工出库">
 
         </activity>
         <activity android:name="com.example.jpda.ListTwoActivity" android:parentActivityName="com.example.jpda.GroupUserChoiceActivity" android:label="条码拆托返工">

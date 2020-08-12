@@ -78,7 +78,7 @@ public class MenuActivity extends AppCompatActivity {
         String str = "{PDAMenu: 2,Rows: [" +
                 "{menuId: 110,menuName: 成品待入库, menuTitle:成品待入库}," +
                 "{menuId:411,menuName:条码拆托返工,menuTitle:条码拆托返工}, " +
-                "{menuId:412,menuName:条码不拆托,menuTitle:条码不拆托}, " +
+                "{menuId:412,menuName:条码返工出库,menuTitle:条码返工出库}, " +
                 "{menuId:413,menuName:其他出库,menuTitle:其他出库}, " +
                 "{menuId:414,menuName:发货拣货,menuTitle:发货拣货}]}";
         mHandler.obtainMessage(1, str).sendToTarget();
@@ -147,7 +147,7 @@ public class MenuActivity extends AppCompatActivity {
                         Intent intent = new Intent(MenuActivity.this, ChoiceHouse.class);
                         intent.putExtra("menuid", rows.get(arg0).getMenuId());
                         startActivity(intent);
-                    } else if (title.contains("条码不拆托")) {
+                    } else if (title.contains("条码返工出库")) {
                         Intent intent = new Intent(MenuActivity.this, ListThreeActivity.class);
                         startActivity(intent);
                     }else if (title.contains("其他出库")) {
