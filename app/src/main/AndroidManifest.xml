@@ -34,7 +34,7 @@
         <activity android:name="com.example.jpda.ListThreeActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="条码返工出库">
 
         </activity>
-        <activity android:name="com.example.jpda.ListTwoActivity" android:parentActivityName="com.example.jpda.GroupUserChoiceActivity" android:label="条码拆托返工">
+        <activity android:name="com.example.jpda.ui.ListTwoActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="条码拆托返工">
 
         </activity>
 

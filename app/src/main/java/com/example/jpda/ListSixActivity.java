@@ -98,6 +98,7 @@ public class ListSixActivity extends AppCompatActivity {
     private Vibrator vibrator;
     private final int MAX_BAR = 100;
     private int allSize = 0;
+    private String quantityPicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,6 +236,7 @@ public class ListSixActivity extends AppCompatActivity {
         super.onResume();
         Intent intent = getIntent();
         autoid = intent.getStringExtra("autoid");
+        quantityPicked = intent.getStringExtra("quantityPicked");
         initScan();
         initPicking();
 //        showScanResult.setText("");
@@ -268,7 +270,8 @@ public class ListSixActivity extends AppCompatActivity {
             toast.show();
             return;
         }
-        new AlertDialog.Builder(ListSixActivity.this).setTitle("一共有" + strArr.size() + "码，" + allSize + "件，确认要提交吗")
+        new AlertDialog.Builder(ListSixActivity.this).setTitle("提示")
+                .setMessage("一共有" + strArr.size() + "码，" + allSize + "件，所需发货件数为：" + quantityPicked + "件，确认要提交吗")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -371,10 +374,9 @@ public class ListSixActivity extends AppCompatActivity {
     }
 
     private void submitBarCode() {
-        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/CommitBarToStock?userName="
+        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/SavePDABarsToPVs?userName="
                 + userBean.getUserId()
-                + "&whCode=" + autoid
-                + "&tDate=" + setinfo.getString("Date", "");
+                + "&autoid=" + autoid;
         for (MyContent myContent : strArr) {
             url += "&barcodes=" + myContent.getContent();
         }
@@ -500,7 +502,7 @@ public class ListSixActivity extends AppCompatActivity {
                     toast.setText(mesg);
                     toast.show();
                 } else {
-                    new AlertDialog.Builder(ListSixActivity.this).setTitle("待入库单号号为：【" + mesg + "】")
+                    new AlertDialog.Builder(ListSixActivity.this).setTitle("拣货单号为：【" + mesg + "】")
                             .setIcon(android.R.drawable.ic_dialog_info)
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override

@@ -1,10 +1,13 @@
 package com.example.jpda.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.example.jpda.base.BaseListActivity;
 import com.example.jpda.commpont.MyContent;
+import com.zyao89.view.zloading.ZLoadingDialog;
+import com.zyao89.view.zloading.Z_TYPE;
 
 import androidx.annotation.Nullable;
 import okhttp3.Request;
@@ -18,6 +21,10 @@ public class ListOneActivity extends BaseListActivity {
         //设置好提交请求和checkBar的url
         this.submitBarUrl = "CommitBarToStock";
         this.checkBarUrl = "GetBarStatus";
+        //dialog需要对应当前页面对象
+        this.dialog = new ZLoadingDialog(this);
+        dialog.setLoadingBuilder(Z_TYPE.DOUBLE_CIRCLE)//设置类型
+                .setLoadingColor(Color.BLACK);//颜色
     }
 
     @Override

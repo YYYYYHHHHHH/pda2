@@ -83,6 +83,7 @@ public class ListFiveActivity extends AppCompatActivity {
     private SoundPool soundpool = null;
     private ScanManager mScanManager;
     private int soundid;
+    private String quantityPicked;
     private SingleNumberBean singleNumberBean = new SingleNumberBean();
 
 
@@ -123,6 +124,7 @@ public class ListFiveActivity extends AppCompatActivity {
         } else {
             Intent intent = new Intent(this, ListSixActivity.class);
             intent.putExtra("autoid", barcodeStr);
+            intent.putExtra("quantityPicked", quantityPicked);
             startActivity(intent);
         }
     }
@@ -207,6 +209,7 @@ public class ListFiveActivity extends AppCompatActivity {
         inum.setText(bean.getInum());
         cSOCode.setText(bean.getCSOCode());
         cmemo.setText(bean.getCmemo());
+        quantityPicked = bean.getInum();
     }
 
     private Handler mHandler = new Handler() {

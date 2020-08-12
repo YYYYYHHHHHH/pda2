@@ -68,7 +68,6 @@ public class BaseListActivity extends AppCompatActivity implements ImList {
     protected SoundPool soundpool = null;
     protected String barcodeStr;
     protected ScanManager mScanManager;
-    protected ZLoadingDialog dialog = MyDiaLog.getDialog(this);
     protected UserBean userBean;
     protected Set<SlideLayout> sets = new HashSet();
     protected Toast toast = MyToast.getToast();
@@ -79,6 +78,7 @@ public class BaseListActivity extends AppCompatActivity implements ImList {
     protected Vibrator vibrator;
     protected String checkBarUrl = "";
     protected String submitBarUrl = "";
+    protected ZLoadingDialog dialog;
     protected ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
     protected TextView numberText;
