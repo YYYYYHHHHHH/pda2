@@ -271,7 +271,7 @@ public class ListSixActivity extends AppCompatActivity {
             return;
         }
         new AlertDialog.Builder(ListSixActivity.this).setTitle("提示")
-                .setMessage("一共有" + strArr.size() + "码，" + allSize + "件，所需发货件数为：" + quantityPicked + "件，确认要提交吗")
+                .setMessage("一共有" + strArr.size() + "码，" + allSize + "件\n所需发货件数为：" + quantityPicked + "件\n确认要提交吗")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -316,6 +316,8 @@ public class ListSixActivity extends AppCompatActivity {
                         allSize = 0;
                         numberText.setText(strArr.size() + "码(" + allSize + "件)");
                         inputCode.setText("");
+                        clearAllCode();
+
                     }
                 })
                 .setNegativeButton("返回", new DialogInterface.OnClickListener() {
@@ -331,6 +333,39 @@ public class ListSixActivity extends AppCompatActivity {
         inputCode.setFocusable(true);
         inputCode.setFocusableInTouchMode(true);
         inputCode.requestFocus();
+    }
+
+    private void clearAllCode() {
+        final Request request = new Request.Builder()
+                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/DeleteAllBarFromPDA?autoid=" + autoid
+                        + "&LoginUser=" + userBean.getUser())
+                .get()
+                .build();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Response response = null;
+                try {
+                    //回调
+                    response = client.newCall(request).execute();
+                    mHandler.obtainMessage(6, response).sendToTarget();
+                } catch (IOException e) {
+                    dialog.cancel();
+                    isScaning = false;
+                    e.printStackTrace();
+                    if (e instanceof SocketTimeoutException) {
+                        toast.setText("请求超时！");
+                        toast.show();
+                    }
+                    if (e instanceof ConnectException) {
+                        toast.setText("和服务器连接异常！");
+                        toast.show();
+
+                    }
+                }
+            }
+        }).start();
+
     }
 
 
@@ -374,7 +409,7 @@ public class ListSixActivity extends AppCompatActivity {
     }
 
     private void submitBarCode() {
-        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/SavePDABarsToPVs?userName="
+        String url = "http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/SavePDABarsToPVs?loginuser="
                 + userBean.getUserId()
                 + "&autoid=" + autoid;
         for (MyContent myContent : strArr) {
@@ -515,9 +550,10 @@ public class ListSixActivity extends AppCompatActivity {
                                 }
                             }).show();
                     strArr.clear();
+                    allSize = 0;
                     MyAdapter myAdapter = new ListSixActivity.MyAdapter(ListSixActivity.this, strArr);
                     listView.setAdapter(myAdapter);
-                    numberText.setText(strArr.size() + "件");
+                    numberText.setText(strArr.size() + "码(" + allSize + "件)");
                 }
             } else if (msg.what == 3) {
                 handlerThree(ReturnMessage);
@@ -525,9 +561,15 @@ public class ListSixActivity extends AppCompatActivity {
                 handlerFour(ReturnMessage);
             } else if (msg.what == 5) {
                 handlerFive(ReturnMessage);
+            } else if (msg.what == 6) {
+
             }
         }
     };
+
+    private void handlerSix(String ReturnMessage) {
+        initPicking();
+    }
 
     private void handlerFive(String ReturnMessage) {
         GetBarDetailsBean bean = new Gson().fromJson(ReturnMessage, GetBarDetailsBean.class);
@@ -567,7 +609,7 @@ public class ListSixActivity extends AppCompatActivity {
             toast.setText(bean.getMsg());
             toast.show();
         }
-
+        allSize = 0;
         initPicking();
     }
 

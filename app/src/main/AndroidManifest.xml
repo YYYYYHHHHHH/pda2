@@ -23,18 +23,18 @@
                 android:resource="@xml/file_provider_paths"/>
         </provider>
 
-        <activity android:name=".ListFiveActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="发货拣货">
+        <activity android:name="com.example.jpda.ui.lists.ListFiveActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="发货拣货">
         </activity>
-        <activity android:name="com.example.jpda.ui.ListOneActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="待入库">
+        <activity android:name="com.example.jpda.ui.lists.ListOneActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="待入库">
 
         </activity>
-        <activity android:name="com.example.jpda.ListFourActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="其他出库">
+        <activity android:name="com.example.jpda.ui.lists.ListFourActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="其他出库">
 
         </activity>
-        <activity android:name="com.example.jpda.ListThreeActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="条码返工出库">
+        <activity android:name="com.example.jpda.ui.lists.ListThreeActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="条码返工出库">
 
         </activity>
-        <activity android:name="com.example.jpda.ui.ListTwoActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="条码拆托返工">
+        <activity android:name="com.example.jpda.ui.lists.ListTwoActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="条码拆托返工">
 
         </activity>
 

@@ -1,4 +1,4 @@
-package com.example.jpda.ui;
+package com.example.jpda.ui.lists;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,8 +16,8 @@ public class ListOneActivity extends BaseListActivity {
     private String cWhCode;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void init() {
+        super.init();
         //设置好提交请求和checkBar的url
         this.submitBarUrl = "CommitBarToStock";
         this.checkBarUrl = "GetBarStatus";

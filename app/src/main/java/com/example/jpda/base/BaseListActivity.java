@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.device.ScanManager;
 import android.device.scanner.configuration.PropertyID;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -26,21 +25,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.jpda.ListTwoActivity;
 import com.example.jpda.R;
 import com.example.jpda.bean.BarCodeBean;
 import com.example.jpda.bean.UserBean;
-import com.example.jpda.bean.globalbean.MyDiaLog;
 import com.example.jpda.bean.globalbean.MyOkHttpClient;
 import com.example.jpda.bean.globalbean.MyToast;
 import com.example.jpda.commpont.MyContent;
 import com.example.jpda.commpont.SlideLayout;
 import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
-import com.zyao89.view.zloading.Z_TYPE;
-
-import org.xutils.view.annotation.Event;
-import org.xutils.view.annotation.ViewInject;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -48,9 +41,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -61,7 +52,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class BaseListActivity extends AppCompatActivity implements ImList {
+public class BaseListActivity extends AppCompatActivity {
     protected final static String SCAN_ACTION = ScanManager.ACTION_DECODE;
     protected static int MAX_BAR = 100;
     protected boolean isScaning = false;
@@ -92,6 +83,10 @@ public class BaseListActivity extends AppCompatActivity implements ImList {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        init();
+    }
+
+    protected void init() {
         setContentView(R.layout.activity_list);
         numberText = findViewById(R.id.numberText);
         inputCode = findViewById(R.id.inputCode);
@@ -211,28 +206,32 @@ public class BaseListActivity extends AppCompatActivity implements ImList {
         @Override
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
-            soundpool.play(soundid, 1, 1, 0, 0, 1);
-            byte[] barcode = intent.getByteArrayExtra(ScanManager.DECODE_DATA_TAG);
-            int barcodelen = intent.getIntExtra(ScanManager.BARCODE_LENGTH_TAG, 0);
-            byte temp = intent.getByteExtra(ScanManager.BARCODE_TYPE_TAG, (byte) 0);
-            android.util.Log.i("debug", "----codetype--" + temp);
-            barcodeStr = new String(barcode, 0, barcodelen);
-            android.util.Log.i("debug", "----code--" + barcodeStr);
-            if (strArr.contains(new MyContent(barcodeStr))) {
-                toast.setText("不能重复扫码！");
-                toast.show();
-                return;
-            }
-            if (!isScaning) {
-                if (strArr.size() >= MAX_BAR) {
-                    toast.setText("一次扫入的条码不能超过【" + MAX_BAR + "】条");
-                } else {
-                    isScaning = true;
-                    checkBarCode(barcodeStr);
-                }
-            }
+            ScanReceiverRun(context, intent);
         }
     };
+
+    protected void ScanReceiverRun(Context context, Intent intent) {
+        soundpool.play(soundid, 1, 1, 0, 0, 1);
+        byte[] barcode = intent.getByteArrayExtra(ScanManager.DECODE_DATA_TAG);
+        int barcodelen = intent.getIntExtra(ScanManager.BARCODE_LENGTH_TAG, 0);
+        byte temp = intent.getByteExtra(ScanManager.BARCODE_TYPE_TAG, (byte) 0);
+        android.util.Log.i("debug", "----codetype--" + temp);
+        barcodeStr = new String(barcode, 0, barcodelen);
+        android.util.Log.i("debug", "----code--" + barcodeStr);
+        if (strArr.contains(new MyContent(barcodeStr))) {
+            toast.setText("不能重复扫码！");
+            toast.show();
+            return;
+        }
+        if (!isScaning) {
+            if (strArr.size() >= MAX_BAR) {
+                toast.setText("一次扫入的条码不能超过【" + MAX_BAR + "】条");
+            } else {
+                isScaning = true;
+                checkBarCode(barcodeStr);
+            }
+        }
+    }
 
     /**
      * @author YZHY
@@ -386,7 +385,7 @@ public class BaseListActivity extends AppCompatActivity implements ImList {
             toast.setText(mesg);
             toast.show();
         } else {
-            new AlertDialog.Builder(this).setTitle("【" + mesg + "】")
+            new AlertDialog.Builder(this).setTitle("单号:【" + mesg + "】")
                     .setIcon(android.R.drawable.ic_dialog_info)
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override

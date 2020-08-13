@@ -1,20 +1,22 @@
-package com.example.jpda.ui;
+package com.example.jpda.ui.lists;
 
 import android.graphics.Color;
 import android.os.Bundle;
 
 import com.example.jpda.base.BaseListActivity;
+import com.example.jpda.bean.BarCodeBean;
+import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
 
 import androidx.annotation.Nullable;
 
-public class ListTwoActivity extends BaseListActivity {
+public class ListFourActivity extends BaseListActivity {
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void init() {
+        super.init();
         //设置好提交请求和checkBar的url
-        this.submitBarUrl = "ReturnBarFromStock";
+        this.submitBarUrl = "othReturnBarfromStock";
         this.checkBarUrl = "CheckBarStatus";
         //dialog需要对应当前页面对象
         this.dialog = new ZLoadingDialog(this);

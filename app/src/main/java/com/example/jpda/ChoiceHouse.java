@@ -19,7 +19,7 @@ import com.example.jpda.bean.WhBean;
 import com.example.jpda.bean.WhListBean;
 import com.example.jpda.bean.globalbean.MyOkHttpClient;
 import com.example.jpda.bean.globalbean.MyToast;
-import com.example.jpda.ui.ListOneActivity;
+import com.example.jpda.ui.lists.ListOneActivity;
 import com.google.gson.Gson;
 
 import org.xutils.view.annotation.ContentView;
