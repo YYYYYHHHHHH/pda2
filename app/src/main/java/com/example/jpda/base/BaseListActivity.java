@@ -455,7 +455,7 @@ public class BaseListActivity extends AppCompatActivity {
      * @author YZHY
      * @describe 当list中的item被点击的事项
      */
-    protected void onItemClick(int position, View v, ViewGroup parent) {
+    protected void onItemClick(int position, View v, ViewGroup parent, ArrayList<MyContent> datas) {
 
     }
 
@@ -476,11 +476,11 @@ public class BaseListActivity extends AppCompatActivity {
      * @author YZHY
      * @describe 渲染list的适配器
      */
-    class MyAdapter extends BaseAdapter {
+    public class MyAdapter extends BaseAdapter {
         protected Context content;
         protected ArrayList<MyContent> datas;
 
-        protected MyAdapter(Context context, ArrayList<MyContent> datas) {
+        public MyAdapter(Context context, ArrayList<MyContent> datas) {
             this.content = context;
             this.datas = datas;
         }
@@ -518,7 +518,7 @@ public class BaseListActivity extends AppCompatActivity {
             viewHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClick(position, v, parent);
+                    onItemClick(position, v, parent, datas);
                 }
             });
             viewHolder.menuView.setOnClickListener(new View.OnClickListener() {

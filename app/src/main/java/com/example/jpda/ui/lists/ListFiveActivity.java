@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.jpda.ListSixActivity;
 import com.example.jpda.R;
 import com.example.jpda.base.BaseListActivity;
 import com.example.jpda.bean.SingleNumberBean;

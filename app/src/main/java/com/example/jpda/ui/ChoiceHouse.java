@@ -1,4 +1,4 @@
-package com.example.jpda;
+package com.example.jpda.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
+import com.example.jpda.R;
 import com.example.jpda.bean.UserBean;
 import com.example.jpda.bean.WhBean;
 import com.example.jpda.bean.WhListBean;

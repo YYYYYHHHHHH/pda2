@@ -1,4 +1,4 @@
-package com.example.jpda;
+package com.example.jpda.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
+import com.example.jpda.ListTwoActivity;
+import com.example.jpda.R;
 import com.example.jpda.bean.CustomerBean;
 import com.example.jpda.bean.CustomerListBean;
 import com.example.jpda.bean.globalbean.MyOkHttpClient;

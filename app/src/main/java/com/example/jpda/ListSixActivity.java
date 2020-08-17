@@ -562,7 +562,7 @@ public class ListSixActivity extends AppCompatActivity {
             } else if (msg.what == 5) {
                 handlerFive(ReturnMessage);
             } else if (msg.what == 6) {
-
+                handlerSix(ReturnMessage);
             }
         }
     };

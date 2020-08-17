@@ -23,26 +23,26 @@
                 android:resource="@xml/file_provider_paths"/>
         </provider>
 
-        <activity android:name="com.example.jpda.ui.lists.ListFiveActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="发货拣货">
+        <activity android:name="com.example.jpda.ui.lists.ListFiveActivity" android:parentActivityName="com.example.jpda.ui.MenuActivity" android:label="发货拣货">
         </activity>
-        <activity android:name="com.example.jpda.ui.lists.ListOneActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="待入库">
+        <activity android:name="com.example.jpda.ui.lists.ListOneActivity" android:parentActivityName="com.example.jpda.ui.MenuActivity" android:label="待入库">
 
         </activity>
-        <activity android:name="com.example.jpda.ui.lists.ListFourActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="其他出库">
+        <activity android:name="com.example.jpda.ui.lists.ListFourActivity" android:parentActivityName="com.example.jpda.ui.MenuActivity" android:label="其他出库">
 
         </activity>
-        <activity android:name="com.example.jpda.ui.lists.ListThreeActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="条码返工出库">
+        <activity android:name="com.example.jpda.ui.lists.ListThreeActivity" android:parentActivityName="com.example.jpda.ui.MenuActivity" android:label="条码返工出库">
 
         </activity>
-        <activity android:name="com.example.jpda.ui.lists.ListTwoActivity" android:parentActivityName="com.example.jpda.MenuActivity" android:label="条码拆托返工">
-
-        </activity>
-
-        <activity android:name="com.example.jpda.MenuActivity" android:label="菜单">
+        <activity android:name="com.example.jpda.ui.lists.ListTwoActivity" android:parentActivityName="com.example.jpda.ui.MenuActivity" android:label="条码拆托返工">
 
         </activity>
 
-        <activity android:name="com.example.jpda.LoginActivity" android:windowSoftInputMode="stateHidden|stateUnchanged|adjustResize">
+        <activity android:name="com.example.jpda.ui.MenuActivity" android:label="菜单">
+
+        </activity>
+
+        <activity android:name="com.example.jpda.ui.LoginActivity" android:windowSoftInputMode="stateHidden|stateUnchanged|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"></action>
                 <category android:name="android.intent.category.LAUNCHER"></category>
@@ -50,15 +50,18 @@
 
         </activity>
 
-        <activity android:name="com.example.jpda.ChoiceHouse" android:parentActivityName="com.example.jpda.LoginActivity" android:label="选择待入库仓库">
+        <activity android:name="com.example.jpda.ui.ChoiceHouse" android:parentActivityName="com.example.jpda.ui.LoginActivity" android:label="选择待入库仓库">
 
         </activity>
 
-        <activity android:name="com.example.jpda.GroupUserChoiceActivity" android:parentActivityName="com.example.jpda.LoginActivity" android:label="选择客户">
+        <activity android:name="com.example.jpda.ui.GroupUserChoiceActivity" android:parentActivityName="com.example.jpda.ui.LoginActivity" android:label="选择客户">
 
         </activity>
 
-        <activity android:name="com.example.jpda.ListSixActivity" android:parentActivityName="com.example.jpda.ListFiveActivity" android:label="拣货">
+        <activity android:name="com.example.jpda.ui.lists.ListSixActivity" android:parentActivityName="com.example.jpda.ListFiveActivity" android:label="拣货">
+
+        </activity>
+        <activity android:name="com.example.jpda.ui.lists.ListSevenActivity" android:label="条码详细">
 
         </activity>
     </application>

@@ -3,7 +3,7 @@ package com.example.jpda.bean.globalbean;
 import android.view.Gravity;
 import android.widget.Toast;
 
-import com.example.jpda.LoginActivity;
+import com.example.jpda.ui.LoginActivity;
 
 public class MyToast {
     private static Toast toast = null;

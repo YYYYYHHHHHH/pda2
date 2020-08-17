@@ -1,4 +1,4 @@
-package com.example.jpda;
+package com.example.jpda.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.example.jpda.R;
 import com.example.jpda.bean.MenuBean;
 import com.example.jpda.bean.MenuBgBean;
 import com.example.jpda.bean.UserBean;
