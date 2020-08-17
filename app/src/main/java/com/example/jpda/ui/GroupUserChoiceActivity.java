@@ -18,12 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
-import com.example.jpda.ListTwoActivity;
 import com.example.jpda.R;
 import com.example.jpda.bean.CustomerBean;
 import com.example.jpda.bean.CustomerListBean;
 import com.example.jpda.bean.globalbean.MyOkHttpClient;
 import com.example.jpda.bean.globalbean.MyToast;
+import com.example.jpda.ui.lists.ListTwoActivity;
 import com.google.gson.Gson;
 
 import org.xutils.view.annotation.ContentView;
