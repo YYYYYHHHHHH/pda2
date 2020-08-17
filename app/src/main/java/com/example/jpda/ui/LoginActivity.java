@@ -108,7 +108,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         changeChoiceDate();
         getPermission();
         onLongClick();
-//        checkVersion();
+        checkVersion();
     }
 
     private void checkVersion() {
