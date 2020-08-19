@@ -55,9 +55,9 @@ public class ApkUpdateUtils {
     //返回的安装包url
     private String apkUrl = "";
 
-    private String requestUrl = "http://175.24.14.165";
+    private String requestUrl = "http://192.168.11.243";
 
-    private String port = "8080";
+    private String port = "8082";
 
     private Dialog noticeDialog;
 
@@ -258,6 +258,8 @@ public class ApkUpdateUtils {
      * @param url
      */
     private void installApk(){
+        SharedPreferences setinfo = mContext.getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
+        setinfo.edit().putString("Version", "false").commit();
         File externalFilesDir = new File(Environment.getExternalStorageDirectory(),"pda") ;
         File apkFile = new File(externalFilesDir, apkUrl.substring(apkUrl.lastIndexOf("/") + 1, apkUrl.length()));
         Uri apkUri = FileProvider.getUriForFile(mContext,

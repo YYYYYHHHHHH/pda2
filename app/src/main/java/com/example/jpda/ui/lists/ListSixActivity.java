@@ -48,8 +48,8 @@ public class ListSixActivity extends BaseListActivity {
 
     @Override
     protected void SubmitBarPostProcessing(String ReturnMessage) {
-        super.SubmitBarPostProcessing(ReturnMessage);
         allSize = 0;
+        super.SubmitBarPostProcessing(ReturnMessage);
     }
 
     @Override

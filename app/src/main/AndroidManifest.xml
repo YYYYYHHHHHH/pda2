@@ -54,11 +54,7 @@
 
         </activity>
 
-        <activity android:name="com.example.jpda.ui.GroupUserChoiceActivity" android:parentActivityName="com.example.jpda.ui.LoginActivity" android:label="选择客户">
-
-        </activity>
-
-        <activity android:name="com.example.jpda.ui.lists.ListSixActivity" android:parentActivityName="com.example.jpda.ListFiveActivity" android:label="拣货">
+        <activity android:name="com.example.jpda.ui.lists.ListSixActivity" android:parentActivityName="com.example.jpda.ui.MenuActivity" android:label="拣货">
 
         </activity>
         <activity android:name="com.example.jpda.ui.lists.ListSevenActivity" android:label="条码详细">
