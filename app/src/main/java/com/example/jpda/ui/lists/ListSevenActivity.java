@@ -69,7 +69,7 @@ public class ListSevenActivity extends BaseListActivity {
 
     private void initPicking() {
         final Request request = new Request.Builder()
-                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/GetBarsDetails?barcode=" + barcode)
+                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/GetBarsDetails?barcode=" + barcode + "&bTrue=0")
                 .get()
                 .build();
         dialog.setHintText("加载数据中").show();
@@ -97,12 +97,12 @@ public class ListSevenActivity extends BaseListActivity {
             return;
         }
         if (msg.what == 1) {
-            GetBarsDetailsPostProcessing(ReturnMessage);   
+            GetBarsDetailsPostProcessing(ReturnMessage);
         } else if (msg.what == 2) {
             DeleteBarInTrayPostProcessing(ReturnMessage);
         }
     }
-    
+
     public void GetBarsDetailsPostProcessing(String ReturnMessage) {
         GetBarDetailsBean bean = new Gson().fromJson(ReturnMessage, GetBarDetailsBean.class);
         GetBarDetailsRows[] rows = bean.getRows();

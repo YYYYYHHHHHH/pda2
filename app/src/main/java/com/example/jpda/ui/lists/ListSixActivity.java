@@ -148,11 +148,14 @@ public class ListSixActivity extends BaseListActivity {
     @Override
     protected void onItemClick(int position, View v, ViewGroup parent, ArrayList<MyContent> datas) {
         MyContent myContent = datas.get(position);
-        Intent intent = new Intent(ListSixActivity.this, ListSevenActivity.class);
-        intent.putExtra("autoid", autoid);
-        intent.putExtra("barcode", myContent.getContent());
-        startActivity(intent);
-//        showBarDetail(myContent.getContent());
+        if (Integer.parseInt(myContent.getbTrue()) == 0) {
+            Intent intent = new Intent(ListSixActivity.this, ListSevenActivity.class);
+            intent.putExtra("autoid", autoid);
+            intent.putExtra("barcode", myContent.getContent());
+            startActivity(intent);
+        } else {
+            showBarDetail(myContent.getContent());            
+        }
     }
 
     private void InitPickingPostProcessing(String ReturnMessage) {
@@ -161,7 +164,7 @@ public class ListSixActivity extends BaseListActivity {
         strArr.clear();
         allSize = 0;
         for (int i = 0; i < rows.length; i++) {
-            strArr.add(new MyContent(rows[i].getScancode()));
+            strArr.add(new MyContent(rows[i].getScancode(), rows[i].getbTrue()));
             allSize += Integer.parseInt(rows[i].getiNum());
         }
         renderList();
@@ -180,26 +183,14 @@ public class ListSixActivity extends BaseListActivity {
     private void ShowBarDetailPostProcessing(String ReturnMessage) {
         GetBarDetailsBean bean = new Gson().fromJson(ReturnMessage, GetBarDetailsBean.class);
         GetBarDetailsRows[] rows = bean.getRows();
-        String[] sr = new String[rows.length];
+        StringBuilder builder = new StringBuilder();
         for (int i = 0; i < rows.length; i++) {
-            sr[i] = rows[i].getBarcode();
+            builder.append(rows[i].getBarcode()).append("\n");
         }
-        Intent intent = new Intent(this, ListSevenActivity.class);
-        intent.putExtra("list", sr);
-        intent.putExtra("autoid", autoid);
-        intent.putExtra("trayCode", trayCode);
-        startActivity(intent);
-//        final AlertDialog.Builder builder =new AlertDialog.Builder(this);
-//        builder.setTitle("共【" + bean.get条码明细() + "条】明细");
-//        builder.setItems(sr, null);
-//        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.cancel();
-//            }
-//        });
-//        builder.setCancelable(true);
-//        builder.create().show();
+        new AlertDialog.Builder(this)
+                .setTitle("此条码的组托码")
+                .setMessage(builder.toString())
+                .show();
     }
 
     private void ClearAllCodePostProcessing(String ReturnMessage) {
@@ -220,7 +211,7 @@ public class ListSixActivity extends BaseListActivity {
                 .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/DeleteBarFromPDA?autoId="
                         + autoid
                         + "&barcode=" + content
-                        + "&LoginUser" + userBean.getUser())
+                        + "&LoginUser=" + userBean.getUser())
                 .get()
                 .build();
         dialog.setHintText("同步中").show();
@@ -230,7 +221,7 @@ public class ListSixActivity extends BaseListActivity {
     private void showBarDetail(String barcodeStr) {
         trayCode = barcodeStr;
         final Request request = new Request.Builder()
-                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/GetBarsDetails?barcode=" + barcodeStr)
+                .url("http://" + setinfo.getString("Ip", "") + "/MeiliPDAServer/home/GetBarsDetails?barcode=" + barcodeStr + "&bTrue=1")
                 .get()
                 .build();
         dialog.setHintText("获取详情中").show();

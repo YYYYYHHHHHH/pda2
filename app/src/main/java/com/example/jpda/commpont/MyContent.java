@@ -4,9 +4,24 @@ import java.util.Objects;
 
 public class MyContent {
     private String content;
+    
+    private String bTrue;
 
     public MyContent(String content) {
         this.content = content;
+    }
+
+    public MyContent(String content, String bTrue) {
+        this.content = content;
+        this.bTrue = bTrue;
+    }
+
+    public String getbTrue() {
+        return bTrue;
+    }
+
+    public void setbTrue(String bTrue) {
+        this.bTrue = bTrue;
     }
 
     public String getContent() {
