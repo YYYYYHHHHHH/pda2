@@ -130,7 +130,7 @@ public class ListSixActivity extends BaseListActivity {
             toast.setText(mesg);
             toast.show();
         } else {
-            strArr.add(new MyContent(barcodeStr));
+            strArr.add(new MyContent(barcodeStr, barCodeBean.getbTrue()));
             allSize += Integer.parseInt(barCodeBean.getiNum());
             renderList();
         }

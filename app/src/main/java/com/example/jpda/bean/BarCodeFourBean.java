@@ -4,6 +4,15 @@ public class BarCodeFourBean {
     private String Status;
     private String Msg;
     private String iNum;
+    private String bTrue;
+
+    public String getbTrue() {
+        return bTrue;
+    }
+
+    public void setbTrue(String bTrue) {
+        this.bTrue = bTrue;
+    }
 
     public String getiNum() {
         return iNum;
